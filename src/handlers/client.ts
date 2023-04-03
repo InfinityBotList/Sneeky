@@ -83,8 +83,8 @@ class Bot {
 
     private async loadCommands(dir = join(__dirname, '../commands')) {
         
-        readdirSync(dir).filter(f => f.endsWith('.ts')).forEach(async dirs => {
-            const commands = readdirSync(`${dir}/${dirs}/`).filter(files => files.endsWith('.ts'));
+        readdirSync(dir).filter(f => !f.endsWith('.js')).forEach(async dirs => {
+            const commands = readdirSync(`${dir}/${dirs}/`).filter(files => files.endsWith('.js'));
 
             for (const file of commands) {
                 const importFile = await import(`${dir}/${dirs}/${file}`);
