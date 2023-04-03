@@ -5,9 +5,9 @@ export default {
     PREFIX: '//',
     CREDITS: '© 2023 Toxic Dev',
     DOMAINS: {
-        INFINITY: 'https://infinitybots.gg',
-        SPIDER: 'https://spider.infinitybots.gg',
-        INVITE: 'https://discord.com/oauth2/authorize?client_id=820094963614220308&permissions=5488162242369&scope=bot%20applications.commands'
+        INFINITY: `${process.env.WEBSITE}`,
+        SPIDER: `${process.env.SPIDER}`,
+        INVITE: `${process.env.INVITE}`
     },
     DEFAULTS: {
         PREFIX: '//',
