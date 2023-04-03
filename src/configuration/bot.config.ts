@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 export default {
+    LOGO: `${process.env.LOGO}`,
     PREFIX: '//',
     CREDITS: '© 2023 Toxic Dev',
     DOMAINS: {
@@ -29,11 +30,11 @@ export default {
         inm: '#9B1B1E'
     },
     TOKENS: {
-        DISCORD: '',
+        DISCORD: `${process.env.TOKEN}`,
         INFINITY: ''
     },
     CHANNELS: {
         REPORTS: '1092343797582667826',
-        LOGS: '1092343797582667826'
+        LOGS: `${process.env.LOGS}`
     }
 }

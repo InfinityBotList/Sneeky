@@ -2,11 +2,11 @@
     "name": "@infinitybots/sneeky",
     "version": "0.0.1",
     "description": "Rewrite of the Ninja Bot used for Onboarding",
-    "main": "src/main.js",
+    "main": "src/handlers/client.ts",
     "scripts": {
         "prepare": "husky install",
         "lint": "eslint --fix",
-        "start": "node dist/main",
+        "start": "node dist/handlers/client",
         "build": "tsc"
     },
     "author": "Toxic Dev <https://toxicdev.me>",

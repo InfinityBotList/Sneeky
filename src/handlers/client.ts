@@ -1,5 +1,5 @@
 import { IConfig, IColors, IWebhookSend } from '../typings/types';
-import { Client, Intents, WebhookClient, CommandInteraction } from 'discord.js'
+import { Client, WebhookClient, CommandInteraction, MessageEmbed } from 'discord.js'
 import IClientIntents from '../typings/intents'
 import { DiscordResolve } from 'discord-resolve';
 import config from '../configuration/bot.config';
@@ -25,6 +25,7 @@ CommandInteraction.prototype.replyErrorMessage = function(content: string) {
 class Bot {
     public client: Client;
     public admins: string[];
+    public logo: string;
     public credits: string;
     public errHook: WebhookClient;
     public commands: Map<string, any>;
@@ -68,6 +69,7 @@ class Bot {
         this.token = config.TOKENS.DISCORD;
         this.credits = config.CREDITS;
         this.admins = config.ADMINS;
+        this.logo = config.LOGO;
         this.commands = new Map();
         this.cooldowns = new Map();
         this.config = config;
@@ -116,7 +118,18 @@ class Bot {
 
             if (!this.client) return;
 
-            this.errHook.send({ content: "```js\n" + error.toString() + "```" });
+            let embed = new MessageEmbed()
+             .setTitle('ERROR: Uncaught Exception')
+             .setColor(this.colors.red)
+             .setThumbnail(`${this.logo}`)
+             .setDescription("```js" + error.toString() + "```")
+             .setTimestamp()
+             .setFooter({
+                text: `${this.credits}`,
+                iconURL: `${this.logo}`
+             })
+
+            return this.errHook.send({ embeds: [embed] });
         });
 
         process.on('unhandledRejection', (listener: any) => {
@@ -124,7 +137,18 @@ class Bot {
 
             if (!this.client) return;
 
-            this.errHook.send({ content: "```js" + listener.toString() + "```" });
+            let embed = new MessageEmbed()
+             .setTitle('ERROR: UnHandled Rejection')
+             .setColor(this.colors.red)
+             .setThumbnail(`${this.logo}`)
+             .setDescription("```js" + listener.toString() + "```")
+             .setTimestamp()
+             .setFooter({
+                text: `${this.credits}`,
+                iconURL: `${this.logo}`
+             })
+
+            this.errHook.send({ embeds: [embed] });
         });
 
         process.on('rejectionHandled', (listener: any) => {
@@ -132,7 +156,18 @@ class Bot {
 
             if (!this.client) return;
 
-            this.errHook.send({ content: "```js" + listener.toString() + "```" });
+            let embed = new MessageEmbed()
+             .setTitle('ERROR: Handled Rejection')
+             .setColor(this.colors.red)
+             .setThumbnail(`${this.logo}`)
+             .setDescription("```js" + listener.toString() + "```")
+             .setTimestamp()
+             .setFooter({
+                text: `${this.credits}`,
+                iconURL: `${this.logo}`
+             })
+
+             return this.errHook.send({ embeds: [embed] });
         });
 
         process.on('warning', (warning) => {
@@ -140,11 +175,23 @@ class Bot {
 
             if (!this.client) return;
 
-            this.errHook.send({ content: "```js" + warning.toString() + "```" });
+            let embed = new MessageEmbed()
+             .setTitle('ERROR: Process Warning')
+             .setColor(this.colors.red)
+             .setThumbnail(`${this.logo}`)
+             .setDescription("```js" + warning.toString() + "```")
+             .setTimestamp()
+             .setFooter({
+                text: `${this.credits}`,
+                iconURL: `${this.logo}`
+             })
+
+             return this.errHook.send({ embeds: [embed] });
         });
     }
 
     public log(options: IWebhookSend) {
+
         const webhook = new WebhookClient({ url: this.config.CHANNELS.LOGS });
 
         webhook.send(options);
