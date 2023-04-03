@@ -1,0 +1,37 @@
+{
+    "version": "2.4.2",
+	"baseUrl": "./src",
+	"paths": {
+		"@/typings/*": "typings/*",
+		"@/handler/*": "handlers/*",
+		"@/configs/*": "configuration/*",
+		"@/cmds/*": "commands/*",
+		"@/evts/*": "events/*"
+	},
+    "compilerOptions": {
+        "lib": [
+            "es6"
+        ],
+		"allowJs": false,
+        "esModuleInterop": true,
+        "emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noEmitOnError": true,
+		"noImplicitAny": true,
+		"noUnusedLocals": true, 
+		"noUnusedParameters": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"removeComments": false,
+		"sourceMap": false,
+		"strict": true,
+		"target": "es6",
+		"skipLibCheck": true
+    },
+    "exclude": [
+        "node_modules",
+        "ignore"
+    ]
+}

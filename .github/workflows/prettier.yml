@@ -1,0 +1,20 @@
+name: Prettier
+
+on: push
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+
+      - name: Prettier CI
+        uses: creyD/prettier_action@v4.0
+        with:
+          prettier_options: --write **/*.{js,jsx,ts,tsx}
+          commit_message: "🍧 chore(ci): Sweeten the Code Base!"
