@@ -1,4 +1,5 @@
 import Command from "../commandClass";
+import config from "../../configuration/bot.config"
 import { MessageEmbed } from "discord.js";
 import { sneekyReports } from "../../database/reports";
 import type { ICommandInteraction, ICommandArgs } from "../../typings/types";
@@ -34,6 +35,36 @@ export default class extends Command {
                             required: true
                         }
                     ]
+                },
+                {
+                    name: 'check',
+                    description: 'Check the status of a report',
+                    options: [
+                        {
+                            name: 'report_id',
+                            description: 'The ID of the Report',
+                            type: 'STRING',
+                            required: true
+                        }
+                    ]
+                },
+                {
+                    name: 'update',
+                    description: 'Update the state of a report',
+                    options: [
+                        {
+                            name: 'report_id',
+                            description: 'The ID of the Report',
+                            type: 'STRING',
+                            required: true
+                        },
+                        {
+                            name: 'is_resolved',
+                            description: 'Has the report been handled/resolved',
+                            required: true,
+                            type: 'BOOLEAN',
+                        }
+                    ]
                 }
             ]
         })
@@ -45,9 +76,15 @@ export default class extends Command {
 
             case 'bug':
 
+            let paginate = ['1', '2'];
+            let res = (paginate[Math.floor(Math.random() * paginate.length)])
+
+            if (res == '1') {
+
+
             let title: string = await args.get('title')?.value;
             let content: string = await args.get('message')?.value
-            
+
             const repID = Math.random().toString().substr(2, 8);
 
             let waiting = new MessageEmbed()
@@ -71,7 +108,9 @@ export default class extends Command {
                 repID: repID,
                 userID: interaction.user.id,
                 userName: interaction.user.username,
-                message: content
+                implemented: false,
+                message: content,
+                active: true
              })
 
              await report.save().then(async () => {
@@ -154,9 +193,157 @@ export default class extends Command {
                   })
              })
 
+            } else {
+
+                let embed = new MessageEmbed()
+                 .setTitle('ERROR: Unknown Error')
+                 .setColor(this.bot.colors.red)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('Whoops something went wrong here but i can\'t seem to figure out what!')
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                 })
+
+                 interaction.reply({ embeds: [embed] });
+            }
+             
+
              break;
 
-             /** ADD MORE SUBCOMMANDS HERE IN THE FUTURE */
+             case 'check':
+
+             let repId: any = await args.get('report_id')?.value;
+             let repFetch: any = await sneekyReports.findOne({ userID: interaction.user.id, repID:  repId });
+
+             let embed = new MessageEmbed()
+              .setTitle('ERROR: Report not found')
+              .setColor(this.bot.colors.red)
+              .setThumbnail(this.bot.logo)
+              .setDescription('Whoops, i can\'t seem to find that report anywhere')
+              .addFields(
+                {
+                    name: 'Notice',
+                    value: 'In most cases this means it has been addressed',
+                    inline: false
+                }
+              )
+              .setTimestamp()
+              .setFooter({
+                text: `${this.bot.credits}`,
+                iconURL: `${this.bot.logo}`
+              })
+
+              if (!repFetch) return interaction.reply({ embeds: [embed] });
+              
+              else {
+
+                let embed = new MessageEmbed()
+                 .setTitle('Report Information')
+                 .setColor(this.bot.colors.embed)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('Here is your report info/status')
+                 .addFields(
+                    { 
+                        name: 'Report Type',
+                        value: '[BUG_REPORT]',
+                        inline: false
+                    },
+                    {
+                        name: 'Report State',
+                        value: `${repFetch.implemented ? '[FIXED/PATCHED]' : '[PENDING]'}`,
+                        inline: false
+                    },
+                    {
+                        name: 'Report Title',
+                        value: `${repFetch.title}`,
+                        inline: false
+                    },
+                    {
+                        name: 'Report Content',
+                        value: `${repFetch.message}`,
+                        inline: false
+                    }
+                 )
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                  })
+
+                  interaction.reply({ embeds: [embed] });
+              }
+
+
+              break;
+            
+              case 'update': 
+
+              let reportId: any = args.get('report_id')?.value;
+              let isActive: boolean = args.get('is_resolved')?.value;
+              let reportFetch = await sneekyReports.findOne({ userID: interaction.user.id, repID: reportId });
+
+              if (!config.ADMINS.includes(interaction.user.id)) return;
+
+              if (isActive) {
+
+                reportFetch.active = true;
+                reportFetch.implemented = false;
+
+                await reportFetch.save().then(async () => {
+
+                    let e1 = new MessageEmbed()
+                     .setTitle('ACTION: Report State Update')
+                     .setColor(this.bot.colors.embed)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription('The report has been updated successfully')
+                     .addFields(
+                        {
+                            name: 'Report State',
+                            value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
+                            inline: false
+                        }
+                     )
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+
+                     return interaction.reply({ embeds: [e1] });
+
+                })
+
+              } else {
+
+                reportFetch.active = false;
+                reportFetch.implemented = true;
+                
+                await reportFetch.save().then(async () => {
+
+                    let e2 = new MessageEmbed()
+                     .setTitle('ACTION: Report State Update')
+                     .setColor(this.bot.colors.embed)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription('The report has been updated successfully')
+                     .addFields(
+                        {
+                            name: 'Report State',
+                            value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
+                            inline: false
+                        }
+                     )
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+
+                     return interaction.reply({ embeds: [e2] });
+
+                })
+              }
         }
     }
 }
