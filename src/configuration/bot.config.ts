@@ -4,6 +4,7 @@ export default {
     LOGO: `${process.env.LOGO}`,
     PREFIX: '//',
     CREDITS: '© 2023 Toxic Dev',
+    DATABASE: `${process.env.DATABASE}`,
     DOMAINS: {
         INFINITY: `${process.env.WEBSITE}`,
         SPIDER: `${process.env.SPIDER}`,
@@ -21,7 +22,7 @@ export default {
         "728871946456137770"
     ],
     COLORS: {
-        embed: '#007acc',
+        embed: '#F91F5B',
         embed2: '#9912D9',
         red: '#ff0000',
         orange: '#FFA500',

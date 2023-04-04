@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import Bot from '../handlers/client';
+import config from '../configuration/bot.config'
 import { MessageEmbed } from 'discord.js';
 const logger = require('migizi-logs');
 
@@ -11,6 +13,14 @@ export default class {
 
 	async run() {
         const sneeky = this.bot;
+
+		await mongoose.connect(config.DATABASE, {
+			family: 4,
+			autoIndex: false
+		}, (err) => {
+			if (err) return this.bot.log({ content: 'Database connection failed!'});
+		})
+
 		const data: any = [];
 		const commandsCategories: string[] = [];
 
