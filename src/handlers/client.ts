@@ -1,5 +1,5 @@
 import { IConfig, IColors, IWebhookSend } from '../typings/types';
-import { Client, WebhookClient, CommandInteraction, MessageEmbed } from 'discord.js'
+import { Client, WebhookClient, CommandInteraction, MessageEmbed, Collection } from 'discord.js'
 import IClientIntents from '../typings/intents'
 import { DiscordResolve } from 'discord-resolve';
 import config from '../configuration/bot.config';
@@ -28,7 +28,7 @@ class Bot {
     public logo: string;
     public credits: string;
     public errHook: WebhookClient;
-    public commands: Map<string, any>;
+    public commands: any;
     public cooldowns: Map<string, any>;
     protected config: IConfig;
     protected token: string;
@@ -70,7 +70,7 @@ class Bot {
         this.credits = config.CREDITS;
         this.admins = config.ADMINS;
         this.logo = config.LOGO;
-        this.commands = new Map();
+        this.commands = new Collection();
         this.cooldowns = new Map();
         this.config = config;
 

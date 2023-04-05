@@ -31,15 +31,15 @@ const Profile: Schema = new Schema<Profile>({
     },
     lastDaily: {
         type: Date,
-        required: true
+        required: false
     },
     lastWeekly: {
         type: Date,
-        required: true
+        required: false
     },
     lastMonthly: {
         type: Date,
-        required: true
+        required: false
     }
 });
 

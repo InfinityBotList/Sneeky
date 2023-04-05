@@ -93,7 +93,7 @@ export default class {
 		this.bot.client.application!.commands.set(data);
 
 		logger.info(`Logged in as: ${this.bot.client.user?.tag}!`)
-
+		
 		this.bot.errHook.send({
 			embeds: [
 				new MessageEmbed()
