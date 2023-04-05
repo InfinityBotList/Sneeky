@@ -23,40 +23,17 @@ export default class {
         if (!command) return;
 
         if (command.userPermissions.includes('BOT_ADMIN') && !this.bot.admins.includes(interaction.user.id)) {
-            
-            let embed = new MessageEmbed()
-             .setTitle('ERROR: Missing Permissions')
-             .setColor(this.bot.colors.red)
-             .setThumbnail(`${this.bot.logo}`)
-             .setDescription('Hang on chief, you do not have the necessary permissions to execute this command')
-             .addFields(
-                {
-                    name: 'Required Permissions',
-                    value: `\`BOT_ADMIN\``,
-                    inline: false
-                }
-             )
-             .setTimestamp()
-             .setFooter({
-                text: `${this.bot.credits}`,
-                iconURL: `${this.bot.logo}`
-             })
 
-             return interaction.reply({ embeds: [embed] });
-        
-        } else if (command.botPermissions.length) {
-
-            for (const permission of command.botPermissions) {
-                
-                let embed = new MessageEmbed()
-                 .setTitle('ERROR: Missing Client Permissions')
+             return interaction.reply({ embeds: [
+                new MessageEmbed()
+                 .setTitle('ERROR: Missing Permissions')
                  .setColor(this.bot.colors.red)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription('Hang on chief looks like i am missing some needed permissions ')
+                 .setThumbnail(`${this.bot.logo}`)
+                 .setDescription('Hang on chief, you do not have the necessary permissions to execute this command')
                  .addFields(
                     {
-                        name: 'Required Client Permissions',
-                        value: `\`${command.botPermissions.map((command: string) => command.split("_").map(x => x[0] + x.slice(1).toLowerCase()).join(" ")).join(', ')}\``,
+                        name: 'Required Permissions',
+                        value: `\`BOT_ADMIN\``,
                         inline: false
                     }
                  )
@@ -65,8 +42,31 @@ export default class {
                     text: `${this.bot.credits}`,
                     iconURL: `${this.bot.logo}`
                  })
+             ] });
+        
+        } else if (command.botPermissions.length) {
 
-                if (!interaction.guild!.me!.permissions.has(permission)) return interaction.reply({ embeds: [embed]})
+            for (const permission of command.botPermissions) {
+
+                if (!interaction.guild!.me!.permissions.has(permission)) return interaction.reply({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Missing Client Permissions')
+                     .setColor(this.bot.colors.red)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription('Hang on chief looks like i am missing some needed permissions ')
+                     .addFields(
+                        {
+                            name: 'Required Client Permissions',
+                            value: `\`${command.botPermissions.map((command: string) => command.split("_").map(x => x[0] + x.slice(1).toLowerCase()).join(" ")).join(', ')}\``,
+                            inline: false
+                        }
+                     )
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                ]})
             }
         
         } else if (!this.bot.admins.includes(interaction.user.id)) {
@@ -88,18 +88,18 @@ export default class {
                     
                     const timeLeft = (cdExpirationTime - timeNow) / 1000;
 
-                    let embed = new MessageEmbed()
-                     .setTitle('ERROR: Command Rate limited')
-                     .setColor(this.bot.colors.red)
-                     .setThumbnail(this.bot.logo)
-                     .setDescription(`Please wait: ${timeLeft.toFixed(0)} Seconds before using the: ${command.name} command again!`)
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-
-                     return interaction.reply({ embeds: [embed] });
+                     return interaction.reply({ embeds: [
+                        new MessageEmbed()
+                         .setTitle('ERROR: Command Rate limited')
+                         .setColor(this.bot.colors.red)
+                         .setThumbnail(this.bot.logo)
+                         .setDescription(`Please wait: ${timeLeft.toFixed(0)} Seconds before using the: ${command.name} command again!`)
+                         .setTimestamp()
+                         .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                         })
+                     ] });
                 }
             }
 
@@ -118,29 +118,29 @@ export default class {
             
             } catch(e) {
 
-                let embed = new MessageEmbed()
-                 .setTitle('ERROR: Command execution failed')
-                 .setColor(this.bot.colors.red)
-                 .setDescription('Whoops, something went wrong here. This has been reported to my developers!')
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
+                 await interaction.reply({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Command execution failed')
+                     .setColor(this.bot.colors.red)
+                     .setDescription('Whoops, something went wrong here. This has been reported to my developers!')
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                 ] });
 
-                 let embed2 = new MessageEmbed()
-                 .setTitle('ERROR: Command execution failed')
-                 .setColor(this.bot.colors.red)
-                 .setDescription("```js" + e + "```")
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-
-                 await interaction.reply({ embeds: [embed] });
-
-                 this.bot.log({ embeds: [embed2] });
+                 this.bot.log({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Command execution failed')
+                     .setColor(this.bot.colors.red)
+                     .setDescription("```js" + e + "```")
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                 ] });
 
                  logger.error(e);
             }

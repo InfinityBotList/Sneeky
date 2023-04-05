@@ -87,18 +87,18 @@ export default class extends Command {
 
             const repID = Math.random().toString().substr(2, 8);
 
-            let waiting = new MessageEmbed()
-             .setTitle('Okay, i can do that')
-             .setColor(this.bot.colors.embed)
-             .setThumbnail(this.bot.logo)
-             .setDescription('Please wait while i send your report to my dev team')
-             .setTimestamp()
-             .setFooter({
-                text: `${this.bot.credits}`,
-                iconURL: `${this.bot.logo}`
-             })
-
-             let msg = await interaction.channel!.send({ embeds: [waiting] });
+             let msg = await interaction.channel!.send({ embeds: [
+                new MessageEmbed()
+                 .setTitle('Okay, i can do that')
+                 .setColor(this.bot.colors.embed)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('Please wait while i send your report to my dev team')
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                 })
+             ] });
 
              let report = await sneekyReports.findOne({ userID: interaction.user.id, repID: repID });
 
@@ -117,96 +117,96 @@ export default class extends Command {
 
                 await msg.delete();
 
-                let sent = new MessageEmbed()
-                 .setTitle('Okay, i done did that')
-                 .setColor(this.bot.colors.embed)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription('Your report has been sent off to my dev team.. You can find your Report ID below')
-                 .addFields(
-                    {
-                        name: 'Check Report',
-                        value: 'To check the status of the report run this command again with the `check` param',
-                        inline: false
-                    },
-                    {
-                        name: 'User Notice',
-                        value: 'When checking the status of a report if it no longer exists then the issue has been resolved',
-                        inline: false
-                    },
-                    {
-                        name: 'Report ID',
-                        value: `${repID}`,
-                        inline: false
-                    }
-                 )
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-
-                 let repLog = new MessageEmbed()
-                  .setTitle('New report submitted')
-                  .setColor(this.bot.colors.embed)
-                  .setThumbnail(this.bot.logo)
-                  .setDescription('Hey chief there is a new report to check out')
-                  .addFields(
-                    {
-                        name: 'Report Type',
-                        value: '[BUG_REPORT]',
-                        inline: false
-                    },
-                    {
-                        name: 'Submitted By',
-                        value: `${interaction.user.id} (${interaction.user.id})`,
-                        inline: false
-                    },
-                    {
-                        name: 'Report Title',
-                        value: `${title.length < 1024 ? title : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
-                        inline: false
-                    },
-                    {
-                        name: 'Report Content',
-                        value: `${content.length < 1024 ? content : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
-                        inline: false
-                    },
-                    {
-                        name: 'User Profile',
-                        value: `[View Profile](https://discordapp.com/users/${interaction.user.id})`,
-                        inline: false
-                    }
-                  )
-                  .setTimestamp()
-                  .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                  })
-
                   await this.bot.log({
                     content: `<@&922837596063821835>`,
-                    embeds: [repLog]
+                    embeds: [
+                        new MessageEmbed()
+                         .setTitle('New report submitted')
+                         .setColor(this.bot.colors.embed)
+                         .setThumbnail(this.bot.logo)
+                         .setDescription('Hey chief there is a new report to check out')
+                         .addFields(
+                            {
+                                name: 'Report Type',
+                                value: '[BUG_REPORT]',
+                                inline: false
+                            },
+                            {
+                                name: 'Submitted By',
+                                value: `${interaction.user.id} (${interaction.user.id})`,
+                                inline: false
+                            },
+                            {
+                                name: 'Report Title',
+                                value: `${title.length < 1024 ? title : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
+                                inline: false
+                            },
+                            {
+                                name: 'Report Content',
+                                value: `${content.length < 1024 ? content : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
+                                inline: false
+                            },
+                            {
+                                name: 'User Profile',
+                                value: `[View Profile](https://discordapp.com/users/${interaction.user.id})`,
+                                inline: false
+                            }
+                         )
+                         .setTimestamp()
+                         .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                         })
+                    ]
                   })
 
                   return interaction.reply({
-                    embeds: [sent]
+                    embeds: [
+                        new MessageEmbed()
+                         .setTitle('Okay, i done did that')
+                         .setColor(this.bot.colors.embed)
+                         .setThumbnail(this.bot.logo)
+                         .setDescription('Your report has been sent off to my dev team.. You can find your Report ID below')
+                         .addFields(
+                            {
+                                name: 'Check Report',
+                                value: 'To check the status of the report run this command again with the `check` param',
+                                inline: false
+                            },
+                            {
+                                name: 'User Notice',
+                                value: 'When checking the status of a report if it no longer exists then the issue has been resolved',
+                                inline: false
+                            },
+                            {
+                                name: 'Report ID',
+                                value: `${repID}`,
+                                inline: false
+                            }
+                         )
+                         .setTimestamp()
+                         .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                         })
+                    ]
                   })
              })
 
             } else {
 
-                let embed = new MessageEmbed()
-                 .setTitle('ERROR: Unknown Error')
-                 .setColor(this.bot.colors.red)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription('Whoops something went wrong here but i can\'t seem to figure out what!')
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-
-                 interaction.reply({ embeds: [embed] });
+                 return interaction.reply({ embeds: [
+                    new MessageEmbed()
+                      .setTitle('ERROR: Unknown Error')
+                      .setColor(this.bot.colors.red)
+                      .setThumbnail(this.bot.logo)
+                      .setDescription('Whoops something went wrong here but i can\'t seem to figure out what!')
+                      .setTimestamp()
+                      .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                      })
+                 ] });
             }
              
 
@@ -217,52 +217,16 @@ export default class extends Command {
              let repId: any = await args.get('report_id')?.value;
              let repFetch: any = await sneekyReports.findOne({ userID: interaction.user.id, repID:  repId });
 
-             let embed = new MessageEmbed()
-              .setTitle('ERROR: Report not found')
-              .setColor(this.bot.colors.red)
-              .setThumbnail(this.bot.logo)
-              .setDescription('Whoops, i can\'t seem to find that report anywhere')
-              .addFields(
-                {
-                    name: 'Notice',
-                    value: 'In most cases this means it has been addressed',
-                    inline: false
-                }
-              )
-              .setTimestamp()
-              .setFooter({
-                text: `${this.bot.credits}`,
-                iconURL: `${this.bot.logo}`
-              })
-
-              if (!repFetch) return interaction.reply({ embeds: [embed] });
-              
-              else {
-
-                let embed = new MessageEmbed()
-                 .setTitle('Report Information')
-                 .setColor(this.bot.colors.embed)
+              if (!repFetch) return interaction.reply({ embeds: [
+                new MessageEmbed()
+                 .setTitle('ERROR: Report not found')
+                 .setColor(this.bot.colors.red)
                  .setThumbnail(this.bot.logo)
-                 .setDescription('Here is your report info/status')
+                 .setDescription('Whoops, i can\'t seem to find that report anywhere')
                  .addFields(
-                    { 
-                        name: 'Report Type',
-                        value: '[BUG_REPORT]',
-                        inline: false
-                    },
                     {
-                        name: 'Report State',
-                        value: `${repFetch.implemented ? '[FIXED/PATCHED]' : '[PENDING]'}`,
-                        inline: false
-                    },
-                    {
-                        name: 'Report Title',
-                        value: `${repFetch.title}`,
-                        inline: false
-                    },
-                    {
-                        name: 'Report Content',
-                        value: `${repFetch.message}`,
+                        name: 'Notice',
+                        value: 'In most cases this means it has been addressed',
                         inline: false
                     }
                  )
@@ -270,11 +234,46 @@ export default class extends Command {
                  .setFooter({
                     text: `${this.bot.credits}`,
                     iconURL: `${this.bot.logo}`
-                  })
+                 })
+              ] });
+              
+              else {
 
-                  interaction.reply({ embeds: [embed] });
+                  interaction.reply({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('Report Information')
+                     .setColor(this.bot.colors.embed)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription('Here is your report info/status')
+                     .addFields(
+                        { 
+                            name: 'Report Type',
+                            value: '[BUG_REPORT]',
+                            inline: false
+                        },
+                        {
+                            name: 'Report State',
+                            value: `${repFetch.implemented ? '[FIXED/PATCHED]' : '[PENDING]'}`,
+                            inline: false
+                        },
+                        {
+                            name: 'Report Title',
+                            value: `${repFetch.title}`,
+                            inline: false
+                        },
+                        {
+                            name: 'Report Content',
+                            value: `${repFetch.message}`,
+                            inline: false
+                        }
+                     )
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                  ] });
               }
-
 
               break;
             
@@ -293,25 +292,25 @@ export default class extends Command {
 
                 await reportFetch.save().then(async () => {
 
-                    let e1 = new MessageEmbed()
-                     .setTitle('ACTION: Report State Update')
-                     .setColor(this.bot.colors.embed)
-                     .setThumbnail(this.bot.logo)
-                     .setDescription('The report has been updated successfully')
-                     .addFields(
-                        {
-                            name: 'Report State',
-                            value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
-                            inline: false
-                        }
-                     )
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-
-                     return interaction.reply({ embeds: [e1] });
+                     return interaction.reply({ embeds: [
+                        new MessageEmbed()
+                         .setTitle('ACTION: Report State Update')
+                         .setColor(this.bot.colors.embed)
+                         .setThumbnail(this.bot.logo)
+                         .setDescription('The report has been updated successfully')
+                         .addFields(
+                            {
+                                name: 'Report State',
+                                value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
+                                inline: false
+                            }
+                         )
+                         .setTimestamp()
+                         .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                         })
+                     ] });
 
                 })
 
@@ -322,25 +321,25 @@ export default class extends Command {
                 
                 await reportFetch.save().then(async () => {
 
-                    let e2 = new MessageEmbed()
-                     .setTitle('ACTION: Report State Update')
-                     .setColor(this.bot.colors.embed)
-                     .setThumbnail(this.bot.logo)
-                     .setDescription('The report has been updated successfully')
-                     .addFields(
-                        {
-                            name: 'Report State',
-                            value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
-                            inline: false
-                        }
-                     )
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-
-                     return interaction.reply({ embeds: [e2] });
+                     return interaction.reply({ embeds: [
+                        new MessageEmbed()
+                         .setTitle('ACTION: Report State Update')
+                         .setColor(this.bot.colors.embed)
+                         .setThumbnail(this.bot.logo)
+                         .setDescription('The report has been updated successfully')
+                         .addFields(
+                            {
+                                name: 'Report State',
+                                value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
+                                inline: false
+                            }
+                         )
+                         .setTimestamp()
+                         .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                         })
+                     ] });
 
                 })
               }

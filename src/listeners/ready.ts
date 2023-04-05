@@ -94,19 +94,19 @@ export default class {
 
 		logger.info(`Logged in as: ${this.bot.client.user?.tag}!`)
 
-		let embed = new MessageEmbed()
-		 .setTitle('Startup Successful')
-		 .setColor(this.bot.colors.green)
-		 .setThumbnail(`${this.bot.client.user?.displayAvatarURL({ dynamic: true })}`)
-		 .setDescription('Connected to the Discord API!')
-		 .setTimestamp()
-		 .setFooter({
-			text: `${this.bot.credits}`,
-			iconURL: `${this.bot.client.user?.displayAvatarURL({ dynamic: true })}`
-		 })
-
 		this.bot.errHook.send({
-			embeds: [embed]
+			embeds: [
+				new MessageEmbed()
+		         .setTitle('Startup Successful')
+		         .setColor(this.bot.colors.green)
+		         .setThumbnail(`${this.bot.client.user?.displayAvatarURL({ dynamic: true })}`)
+		         .setDescription('Connected to the Discord API!')
+		         .setTimestamp()
+		         .setFooter({
+					text: `${this.bot.credits}`,
+			        iconURL: `${this.bot.client.user?.displayAvatarURL({ dynamic: true })}`
+		         })
+			]
 		})
 	}
 }

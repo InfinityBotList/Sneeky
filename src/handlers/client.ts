@@ -118,18 +118,20 @@ class Bot {
 
             if (!this.client) return;
 
-            let embed = new MessageEmbed()
-             .setTitle('ERROR: Uncaught Exception')
-             .setColor(this.colors.red)
-             .setThumbnail(`${this.logo}`)
-             .setDescription("```js" + error.toString() + "```")
-             .setTimestamp()
-             .setFooter({
-                text: `${this.credits}`,
-                iconURL: `${this.logo}`
-             })
-
-            return this.errHook.send({ embeds: [embed] });
+            return this.errHook.send({ 
+                embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Uncaught Exception')
+                     .setColor(this.colors.red)
+                     .setThumbnail(`${this.logo}`)
+                     .setDescription("```js" + error.toString() + "```")
+                     .setTimestamp()
+                     .setFooter({
+                         text: `${this.credits}`,
+                         iconURL: `${this.logo}`
+                     })
+                ] 
+            });
         });
 
         process.on('unhandledRejection', (listener: any) => {
@@ -137,18 +139,20 @@ class Bot {
 
             if (!this.client) return;
 
-            let embed = new MessageEmbed()
-             .setTitle('ERROR: UnHandled Rejection')
-             .setColor(this.colors.red)
-             .setThumbnail(`${this.logo}`)
-             .setDescription("```js" + listener.toString() + "```")
-             .setTimestamp()
-             .setFooter({
-                text: `${this.credits}`,
-                iconURL: `${this.logo}`
-             })
-
-            this.errHook.send({ embeds: [embed] });
+            this.errHook.send({ 
+                embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: UnHandled Rejection')
+                     .setColor(this.colors.red)
+                     .setThumbnail(`${this.logo}`)
+                     .setDescription("```js" + listener.toString() + "```")
+                     .setTimestamp()
+                     .setFooter({
+                         text: `${this.credits}`,
+                         iconURL: `${this.logo}`
+                     })
+                ] 
+            });
         });
 
         process.on('rejectionHandled', (listener: any) => {
@@ -156,18 +160,18 @@ class Bot {
 
             if (!this.client) return;
 
-            let embed = new MessageEmbed()
-             .setTitle('ERROR: Handled Rejection')
-             .setColor(this.colors.red)
-             .setThumbnail(`${this.logo}`)
-             .setDescription("```js" + listener.toString() + "```")
-             .setTimestamp()
-             .setFooter({
-                text: `${this.credits}`,
-                iconURL: `${this.logo}`
-             })
-
-             return this.errHook.send({ embeds: [embed] });
+             return this.errHook.send({ embeds: [
+                new MessageEmbed()
+                 .setTitle('ERROR: Handled Rejection')
+                 .setColor(this.colors.red)
+                 .setThumbnail(`${this.logo}`)
+                 .setDescription("```js" + listener.toString() + "```")
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.credits}`,
+                    iconURL: `${this.logo}`
+                 })
+             ] });
         });
 
         process.on('warning', (warning) => {
@@ -175,18 +179,18 @@ class Bot {
 
             if (!this.client) return;
 
-            let embed = new MessageEmbed()
-             .setTitle('ERROR: Process Warning')
-             .setColor(this.colors.red)
-             .setThumbnail(`${this.logo}`)
-             .setDescription("```js" + warning.toString() + "```")
-             .setTimestamp()
-             .setFooter({
-                text: `${this.credits}`,
-                iconURL: `${this.logo}`
-             })
-
-             return this.errHook.send({ embeds: [embed] });
+             return this.errHook.send({ embeds: [
+                new MessageEmbed()
+                 .setTitle('ERROR: Process Warning')
+                 .setColor(this.colors.red)
+                 .setThumbnail(`${this.logo}`)
+                 .setDescription("```js" + warning.toString() + "```")
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.credits}`,
+                    iconURL: `${this.logo}`
+                 })
+             ] });
         });
     }
 
