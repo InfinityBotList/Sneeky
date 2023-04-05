@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 export default {
     LOGO: `${process.env.LOGO}`,
@@ -16,11 +16,7 @@ export default {
         LOGCHANNELS: 'bot-logs',
         INVITATIONS: false
     },
-    ADMINS: [
-        "510065483693817867",
-        "896951964234043413",
-        "728871946456137770"
-    ],
+    ADMINS: ['510065483693817867', '896951964234043413', '728871946456137770'],
     COLORS: {
         embed: '#F91F5B',
         embed2: '#9912D9',

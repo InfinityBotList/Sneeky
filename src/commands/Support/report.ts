@@ -1,13 +1,11 @@
-import Command from "../commandClass";
-import config from "../../configuration/bot.config"
-import { MessageEmbed } from "discord.js";
-import { sneekyReports } from "../../database/reports";
-import type { ICommandInteraction, ICommandArgs } from "../../typings/types";
+import Command from '../commandClass'
+import config from '../../configuration/bot.config'
+import { MessageEmbed } from 'discord.js'
+import { sneekyReports } from '../../database/reports'
+import type { ICommandInteraction, ICommandArgs } from '../../typings/types'
 
 export default class extends Command {
-
     constructor(bot: any) {
-
         super(bot, {
             name: 'report',
             aliases: [],
@@ -62,7 +60,7 @@ export default class extends Command {
                             name: 'is_resolved',
                             description: 'Has the report been handled/resolved',
                             required: true,
-                            type: 'BOOLEAN',
+                            type: 'BOOLEAN'
                         }
                     ]
                 }
@@ -71,278 +69,270 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction, args: ICommandArgs) {
-
-        switch(interaction.subcommand) {
-
+        switch (interaction.subcommand) {
             case 'bug':
+                let paginate = ['1', '2']
+                let res = paginate[Math.floor(Math.random() * paginate.length)]
 
-            let paginate = ['1', '2'];
-            let res = (paginate[Math.floor(Math.random() * paginate.length)])
+                if (res == '1') {
+                    let title: string = await args.get('title')?.value
+                    let content: string = await args.get('message')?.value
 
-            if (res == '1') {
+                    const repID = Math.random().toString().substr(2, 8)
 
+                    let msg = await interaction.channel!.send({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('Okay, i can do that')
+                                .setColor(this.bot.colors.embed)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription('Please wait while i send your report to my dev team')
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
 
-            let title: string = await args.get('title')?.value;
-            let content: string = await args.get('message')?.value
+                    let report = await sneekyReports.findOne({ userID: interaction.user.id, repID: repID })
 
-            const repID = Math.random().toString().substr(2, 8);
+                    if (!report)
+                        report = await sneekyReports.create({
+                            type: '[BUG_REPORT]',
+                            title: title,
+                            repID: repID,
+                            userID: interaction.user.id,
+                            userName: interaction.user.username,
+                            implemented: false,
+                            message: content,
+                            active: true
+                        })
 
-             let msg = await interaction.channel!.send({ embeds: [
-                new MessageEmbed()
-                 .setTitle('Okay, i can do that')
-                 .setColor(this.bot.colors.embed)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription('Please wait while i send your report to my dev team')
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-             ] });
+                    await report.save().then(async () => {
+                        await msg.delete()
 
-             let report = await sneekyReports.findOne({ userID: interaction.user.id, repID: repID });
+                        await this.bot.log({
+                            content: `<@&922837596063821835>`,
+                            embeds: [
+                                new MessageEmbed()
+                                    .setTitle('New report submitted')
+                                    .setColor(this.bot.colors.embed)
+                                    .setThumbnail(this.bot.logo)
+                                    .setDescription('Hey chief there is a new report to check out')
+                                    .addFields(
+                                        {
+                                            name: 'Report Type',
+                                            value: '[BUG_REPORT]',
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Submitted By',
+                                            value: `${interaction.user.id} (${interaction.user.id})`,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Report Title',
+                                            value: `${title.length < 1024 ? title : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Report Content',
+                                            value: `${
+                                                content.length < 1024 ? content : '[REDACTED_FOR_SIZE_CHECK_DB]'
+                                            }`,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'User Profile',
+                                            value: `[View Profile](https://discordapp.com/users/${interaction.user.id})`,
+                                            inline: false
+                                        }
+                                    )
+                                    .setTimestamp()
+                                    .setFooter({
+                                        text: `${this.bot.credits}`,
+                                        iconURL: `${this.bot.logo}`
+                                    })
+                            ]
+                        })
 
-             if (!report) report = await sneekyReports.create({
-                type: '[BUG_REPORT]',
-                title: title,
-                repID: repID,
-                userID: interaction.user.id,
-                userName: interaction.user.username,
-                implemented: false,
-                message: content,
-                active: true
-             })
+                        return interaction.reply({
+                            embeds: [
+                                new MessageEmbed()
+                                    .setTitle('Okay, i done did that')
+                                    .setColor(this.bot.colors.embed)
+                                    .setThumbnail(this.bot.logo)
+                                    .setDescription(
+                                        'Your report has been sent off to my dev team.. You can find your Report ID below'
+                                    )
+                                    .addFields(
+                                        {
+                                            name: 'Check Report',
+                                            value: 'To check the status of the report run this command again with the `check` param',
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'User Notice',
+                                            value: 'When checking the status of a report if it no longer exists then the issue has been resolved',
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Report ID',
+                                            value: `${repID}`,
+                                            inline: false
+                                        }
+                                    )
+                                    .setTimestamp()
+                                    .setFooter({
+                                        text: `${this.bot.credits}`,
+                                        iconURL: `${this.bot.logo}`
+                                    })
+                            ]
+                        })
+                    })
+                } else {
+                    return interaction.reply({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('ERROR: Unknown Error')
+                                .setColor(this.bot.colors.red)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription("Whoops something went wrong here but i can't seem to figure out what!")
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                }
 
-             await report.save().then(async () => {
+                break
 
-                await msg.delete();
+            case 'check':
+                let repId: any = await args.get('report_id')?.value
+                let repFetch: any = await sneekyReports.findOne({ userID: interaction.user.id, repID: repId })
 
-                  await this.bot.log({
-                    content: `<@&922837596063821835>`,
-                    embeds: [
-                        new MessageEmbed()
-                         .setTitle('New report submitted')
-                         .setColor(this.bot.colors.embed)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('Hey chief there is a new report to check out')
-                         .addFields(
-                            {
-                                name: 'Report Type',
-                                value: '[BUG_REPORT]',
-                                inline: false
-                            },
-                            {
-                                name: 'Submitted By',
-                                value: `${interaction.user.id} (${interaction.user.id})`,
-                                inline: false
-                            },
-                            {
-                                name: 'Report Title',
-                                value: `${title.length < 1024 ? title : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
-                                inline: false
-                            },
-                            {
-                                name: 'Report Content',
-                                value: `${content.length < 1024 ? content : '[REDACTED_FOR_SIZE_CHECK_DB]'}`,
-                                inline: false
-                            },
-                            {
-                                name: 'User Profile',
-                                value: `[View Profile](https://discordapp.com/users/${interaction.user.id})`,
-                                inline: false
-                            }
-                         )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                    ]
-                  })
+                if (!repFetch)
+                    return interaction.reply({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('ERROR: Report not found')
+                                .setColor(this.bot.colors.red)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription("Whoops, i can't seem to find that report anywhere")
+                                .addFields({
+                                    name: 'Notice',
+                                    value: 'In most cases this means it has been addressed',
+                                    inline: false
+                                })
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                else {
+                    interaction.reply({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('Report Information')
+                                .setColor(this.bot.colors.embed)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription('Here is your report info/status')
+                                .addFields(
+                                    {
+                                        name: 'Report Type',
+                                        value: '[BUG_REPORT]',
+                                        inline: false
+                                    },
+                                    {
+                                        name: 'Report State',
+                                        value: `${repFetch.implemented ? '[FIXED/PATCHED]' : '[PENDING]'}`,
+                                        inline: false
+                                    },
+                                    {
+                                        name: 'Report Title',
+                                        value: `${repFetch.title}`,
+                                        inline: false
+                                    },
+                                    {
+                                        name: 'Report Content',
+                                        value: `${repFetch.message}`,
+                                        inline: false
+                                    }
+                                )
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                }
 
-                  return interaction.reply({
-                    embeds: [
-                        new MessageEmbed()
-                         .setTitle('Okay, i done did that')
-                         .setColor(this.bot.colors.embed)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('Your report has been sent off to my dev team.. You can find your Report ID below')
-                         .addFields(
-                            {
-                                name: 'Check Report',
-                                value: 'To check the status of the report run this command again with the `check` param',
-                                inline: false
-                            },
-                            {
-                                name: 'User Notice',
-                                value: 'When checking the status of a report if it no longer exists then the issue has been resolved',
-                                inline: false
-                            },
-                            {
-                                name: 'Report ID',
-                                value: `${repID}`,
-                                inline: false
-                            }
-                         )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                    ]
-                  })
-             })
+                break
 
-            } else {
+            case 'update':
+                let reportId: any = args.get('report_id')?.value
+                let isActive: boolean = args.get('is_resolved')?.value
+                let reportFetch = await sneekyReports.findOne({ userID: interaction.user.id, repID: reportId })
 
-                 return interaction.reply({ embeds: [
-                    new MessageEmbed()
-                      .setTitle('ERROR: Unknown Error')
-                      .setColor(this.bot.colors.red)
-                      .setThumbnail(this.bot.logo)
-                      .setDescription('Whoops something went wrong here but i can\'t seem to figure out what!')
-                      .setTimestamp()
-                      .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                      })
-                 ] });
-            }
-             
+                if (!config.ADMINS.includes(interaction.user.id)) return
 
-             break;
+                if (isActive) {
+                    reportFetch.active = true
+                    reportFetch.implemented = false
 
-             case 'check':
+                    await reportFetch.save().then(async () => {
+                        return interaction.reply({
+                            embeds: [
+                                new MessageEmbed()
+                                    .setTitle('ACTION: Report State Update')
+                                    .setColor(this.bot.colors.embed)
+                                    .setThumbnail(this.bot.logo)
+                                    .setDescription('The report has been updated successfully')
+                                    .addFields({
+                                        name: 'Report State',
+                                        value: `${reportFetch.active ? '[PENDING]' : '[FIXED/PATCHED]'}`,
+                                        inline: false
+                                    })
+                                    .setTimestamp()
+                                    .setFooter({
+                                        text: `${this.bot.credits}`,
+                                        iconURL: `${this.bot.logo}`
+                                    })
+                            ]
+                        })
+                    })
+                } else {
+                    reportFetch.active = false
+                    reportFetch.implemented = true
 
-             let repId: any = await args.get('report_id')?.value;
-             let repFetch: any = await sneekyReports.findOne({ userID: interaction.user.id, repID:  repId });
-
-              if (!repFetch) return interaction.reply({ embeds: [
-                new MessageEmbed()
-                 .setTitle('ERROR: Report not found')
-                 .setColor(this.bot.colors.red)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription('Whoops, i can\'t seem to find that report anywhere')
-                 .addFields(
-                    {
-                        name: 'Notice',
-                        value: 'In most cases this means it has been addressed',
-                        inline: false
-                    }
-                 )
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-              ] });
-              
-              else {
-
-                  interaction.reply({ embeds: [
-                    new MessageEmbed()
-                     .setTitle('Report Information')
-                     .setColor(this.bot.colors.embed)
-                     .setThumbnail(this.bot.logo)
-                     .setDescription('Here is your report info/status')
-                     .addFields(
-                        { 
-                            name: 'Report Type',
-                            value: '[BUG_REPORT]',
-                            inline: false
-                        },
-                        {
-                            name: 'Report State',
-                            value: `${repFetch.implemented ? '[FIXED/PATCHED]' : '[PENDING]'}`,
-                            inline: false
-                        },
-                        {
-                            name: 'Report Title',
-                            value: `${repFetch.title}`,
-                            inline: false
-                        },
-                        {
-                            name: 'Report Content',
-                            value: `${repFetch.message}`,
-                            inline: false
-                        }
-                     )
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-                  ] });
-              }
-
-              break;
-            
-              case 'update': 
-
-              let reportId: any = args.get('report_id')?.value;
-              let isActive: boolean = args.get('is_resolved')?.value;
-              let reportFetch = await sneekyReports.findOne({ userID: interaction.user.id, repID: reportId });
-
-              if (!config.ADMINS.includes(interaction.user.id)) return;
-
-              if (isActive) {
-
-                reportFetch.active = true;
-                reportFetch.implemented = false;
-
-                await reportFetch.save().then(async () => {
-
-                     return interaction.reply({ embeds: [
-                        new MessageEmbed()
-                         .setTitle('ACTION: Report State Update')
-                         .setColor(this.bot.colors.embed)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('The report has been updated successfully')
-                         .addFields(
-                            {
-                                name: 'Report State',
-                                value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
-                                inline: false
-                            }
-                         )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                     ] });
-
-                })
-
-              } else {
-
-                reportFetch.active = false;
-                reportFetch.implemented = true;
-                
-                await reportFetch.save().then(async () => {
-
-                     return interaction.reply({ embeds: [
-                        new MessageEmbed()
-                         .setTitle('ACTION: Report State Update')
-                         .setColor(this.bot.colors.embed)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('The report has been updated successfully')
-                         .addFields(
-                            {
-                                name: 'Report State',
-                                value: `${reportFetch.active ? '[PENDING]': '[FIXED/PATCHED]'}`,
-                                inline: false
-                            }
-                         )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                     ] });
-
-                })
-              }
+                    await reportFetch.save().then(async () => {
+                        return interaction.reply({
+                            embeds: [
+                                new MessageEmbed()
+                                    .setTitle('ACTION: Report State Update')
+                                    .setColor(this.bot.colors.embed)
+                                    .setThumbnail(this.bot.logo)
+                                    .setDescription('The report has been updated successfully')
+                                    .addFields({
+                                        name: 'Report State',
+                                        value: `${reportFetch.active ? '[PENDING]' : '[FIXED/PATCHED]'}`,
+                                        inline: false
+                                    })
+                                    .setTimestamp()
+                                    .setFooter({
+                                        text: `${this.bot.credits}`,
+                                        iconURL: `${this.bot.logo}`
+                                    })
+                            ]
+                        })
+                    })
+                }
         }
     }
 }

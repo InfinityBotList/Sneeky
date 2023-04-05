@@ -1,17 +1,16 @@
+import mongoose, { Schema, Document, model } from 'mongoose'
 
-import mongoose, { Schema, Document, model } from "mongoose";
-
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false)
 
 interface Reports extends Document {
-    type: string;
-    title:  string;
-    repID: string;
-    userID: string;
-    userName: string;
-    message: string;
-    active: boolean;
-    implemented: boolean;
+    type: string
+    title: string
+    repID: string
+    userID: string
+    userName: string
+    message: string
+    active: boolean
+    implemented: boolean
 }
 
 const Reports: Schema = new Schema<Reports>({
@@ -24,7 +23,6 @@ const Reports: Schema = new Schema<Reports>({
         required: true
     },
     repID: {
-
         type: String,
         required: true
     },
@@ -48,8 +46,8 @@ const Reports: Schema = new Schema<Reports>({
         type: Boolean,
         default: false
     }
-});
+})
 
-const sneekyReports = mongoose.models.sneekyReports || model('sneekyReports', Reports);
+const sneekyReports = mongoose.models.sneekyReports || model('sneekyReports', Reports)
 
-export { sneekyReports, Reports };
+export { sneekyReports, Reports }
