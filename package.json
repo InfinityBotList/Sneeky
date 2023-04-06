@@ -10,7 +10,6 @@
         "build": "tsc"
     },
     "author": "Toxic Dev <https://toxicdev.me>",
-    "license": "MIT",
     "dependencies": {
         "@types/ms": "^0.7.31",
         "@types/node": "^18.0.4",
