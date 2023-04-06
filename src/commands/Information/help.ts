@@ -9,6 +9,7 @@ export default class extends Command {
         
         super(bot, {
             name: 'help',
+            usage: '/help | /help <command>',
             aliases: [],
             options: [
                 {
@@ -28,6 +29,7 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
+
         let cmd = interaction.options.getString('command');
 
         if (cmd) {
@@ -45,12 +47,17 @@ export default class extends Command {
                  .addFields(
                     {
                         name: 'Usage',
-                        value: 'Coming Soon',
+                        value: `${cmdFetch.usage}`,
                         inline: true
                     },
                     {
                         name: 'Category',
                         value: `${cmdFetch.category}`,
+                        inline: true
+                    },
+                    {
+                        name: 'Rate Limit',
+                        value: `${cmdFetch.cooldown + " Seconds"}`,
                         inline: true
                     }
                  )
@@ -78,7 +85,37 @@ export default class extends Command {
                             label: "Info Commands",
                             value: 'info',
                             description: 'View all the information category commands'
-                        }
+                        },
+                        {
+                            label: "Economy Commands",
+                            value: 'economy',
+                            description: 'View all the economy category commands'
+                        },
+                        /**{
+                            label: "Fun Commands",
+                            value: 'fun',
+                            description: 'View all the fun category commands'
+                        },
+                        {
+                            label: "Image Commands",
+                            value: 'image',
+                            description: 'View all the image category commands'
+                        },
+                        {
+                            label: "Moderation Commands",
+                            value: 'mod',
+                            description: 'View all the moderation category commands'
+                        },
+                        {
+                            label: 'NSFW Commands',
+                            value: 'nsfw',
+                            description: 'View all of the nsfw category commands'
+                        },
+                        {
+                            label: 'Utility Commands',
+                            value: 'util',
+                            description: 'View all of the utility category commands'
+                        }*/
                     ])
                 ),
             ];
@@ -119,6 +156,7 @@ export default class extends Command {
                         ]
                     })
                 } else if (interaction.values[0] === 'info') {
+                    
                     await interaction.update({
                         embeds: [
                             new MessageEmbed()
@@ -129,7 +167,29 @@ export default class extends Command {
                              .addFields(
                                 {
                                     name: 'Available Commands',
-                                    value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Information').map((cmd: any) => cmd.name)}`,
+                                    value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Information').map((cmd: any) => cmd.name).join(" , ")}`,
+                                    inline: false
+                                }
+                             )
+                             .setTimestamp()
+                             .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                             })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'economy') {
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                             .setTitle('Economy Commands')
+                             .setColor(this.bot.colors.embed)
+                             .setThumbnail(this.bot.logo)
+                             .setDescription('You can use `/help <cmdName> to view command related help`')
+                             .addFields(
+                                {
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Economy').map((cmd: any) => cmd.name).join(" , ")}`,
                                     inline: false
                                 }
                              )

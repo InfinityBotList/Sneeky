@@ -9,11 +9,11 @@ export default class extends Command {
 	constructor(bot: any) {
 
 		super(bot, {
-			name: 'daily',
-            usage: '/daily',
+			name: 'weekly',
+            usage: '/weekly',
 			aliases: [],
 			options: [],
-			description: 'Claim your daily prize',
+			description: 'Claim your weekly prize',
 			category: 'Economy',
 			cooldown: 5,
 			userPermissions: [],
@@ -23,7 +23,7 @@ export default class extends Command {
 	}
 	async execute(interaction: ICommandInteraction) {
 
-        const profile = await findProfile(interaction.user, interaction.guild!);
+        const profile = await findProfile(interaction.user, interaction.guild!)
 
         if (!profile) return interaction.reply({ embeds: [
             new MessageEmbed()
@@ -38,58 +38,57 @@ export default class extends Command {
              })
         ]})
 
-        else if (!profile.lastDaily) {
-
-            await sneekyProfile.updateOne({ 
-                userId: interaction.user.id, 
-                guildId: interaction.guild!.id 
-            }, {
-                $set: { lastDaily: Date.now() }
-            })
-
-            await sneekyProfile.updateOne({
-                userId: interaction.user.id,
-                guildId: interaction.guild!.id
-            }, {
-                $inc: { wallet: 25 }
-            })
-
-            return interaction.reply({
-                embeds: [
-                    new MessageEmbed()
-                     .setTitle('Daily Rewards')
-                     .setThumbnail(this.bot.logo)
-                     .setColor(this.bot.colors.embed)
-                     .setDescription('You have collected today\'s earnings of \'$25\' come back tomorrow to claim again')
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-                ]
-            })
-        } else if (Date.now() - profile.lastDaily > 86400000) {
+        else if (!profile.lastWeekly) {
 
             await sneekyProfile.updateOne({
                 userId: interaction.user.id,
                 guildId: interaction.guild!.id
             },{
-                $set: { lastDaily: Date.now() }
+                $set: { lastWeekly: Date.now() }
             })
 
             await sneekyProfile.updateOne({
                 userId: interaction.user.id,
                 guildId: interaction.guild!.id
             },{
-                $inc: { wallet: 25 }
+                $inc: { wallet: 100 }
             })
 
             return interaction.reply({ embeds: [
                 new MessageEmbed()
-                 .setTitle('Daily Rewards')
-                 .setThumbnail(this.bot.logo)
+                 .setTitle('Weekly Rewards')
                  .setColor(this.bot.colors.embed)
-                 .setDescription('You have collected today\'s earnings of \'$25\' come back tomorrow to claim again')
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('You have claimed your weekly earnings of `$100`. Come back next week to claim more')
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                 })
+            ]})
+
+        } else if (Date.now() - profile.lastWeekly > 604800000) {
+
+            await sneekyProfile.updateOne({
+                userId: interaction.user.id,
+                guildId: interaction.guild!.id
+            },{
+                $set: { lastWeekly: Date.now() }
+            })
+
+            await sneekyProfile.updateOne({
+                userId: interaction.user.id,
+                guildId: interaction.guild!.id
+            },{
+                $inc: { wallet: 100 }
+            })
+
+            return interaction.reply({ embeds: [
+                new MessageEmbed()
+                 .setTitle('Weekly Rewards')
+                 .setColor(this.bot.colors.embed)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('You have claimed your weekly earnings of `$100`. Come back next week to claim more')
                  .setTimestamp()
                  .setFooter({
                     text: `${this.bot.credits}`,
@@ -99,18 +98,28 @@ export default class extends Command {
 
         } else {
 
-            const lastDaily = new Date(profile.lastDaily);
-            const timeLeft = Math.round((lastDaily.getTime() + 86400000 - Date.now()) / 1000);
+            const lastWeekly = new Date(profile.lastWeekly);
+            const timeLeft = Math.round((lastWeekly.getTime() + 604800000 - Date.now()) / 1000);
             const hours = Math.floor(timeLeft / 3600);
             const minutes = Math.floor((timeLeft - hours * 3600) / 60);
             const seconds = timeLeft - hours * 3600 - minutes * 60;
 
             return interaction.reply({ embeds: [
                 new MessageEmbed()
-                 .setTitle('Error: Daily Claimed')
+                 .setTitle('ERROR: Weekly Claimed')
                  .setColor(this.bot.colors.red)
                  .setThumbnail(this.bot.logo)
-                 .setDescription(`Please wait: ${hours}h ${minutes}m ${seconds}s before you can claim your daily earnings again`)
+                 .setDescription('You have already claimed your weekly earnings')
+                 .addFields(
+                    {
+                        name: 'Retry In',
+                        value: `${hours}h ${minutes}m ${seconds}s`
+                    },
+                    {
+                        name: 'Retry Date',
+                        value: `${new Date(Date.now() + 604800000)}`
+                    }
+                 )
                  .setTimestamp()
                  .setFooter({
                     text: `${this.bot.credits}`,

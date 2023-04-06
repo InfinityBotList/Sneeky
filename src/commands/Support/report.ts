@@ -3,6 +3,7 @@ import config from "../../configuration/bot.config"
 import { MessageEmbed } from "discord.js";
 import { sneekyReports } from "../../database/reports";
 import type { ICommandInteraction, ICommandArgs } from "../../typings/types";
+const { randomErrors, fetchRandomErrorMsg } = require('../../structures/utils');
 
 export default class extends Command {
 
@@ -10,6 +11,7 @@ export default class extends Command {
 
         super(bot, {
             name: 'report',
+            usage: '/report bug | /report check | /report update',
             aliases: [],
             args: [],
             description: 'Create a new report or check the status of a report!',
@@ -76,11 +78,21 @@ export default class extends Command {
 
             case 'bug':
 
-            let paginate = ['1', '2'];
-            let res = (paginate[Math.floor(Math.random() * paginate.length)])
-
-            if (res == '1') {
-
+            if (await randomErrors(interaction.user.id)) {
+                return interaction.reply({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Unknown Error')
+                     .setColor(this.bot.colors.red)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription(`${await fetchRandomErrorMsg()}`)
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                ]})
+    
+            } 
 
             let title: string = await args.get('title')?.value;
             let content: string = await args.get('message')?.value
@@ -192,27 +204,26 @@ export default class extends Command {
                     ]
                   })
              })
-
-            } else {
-
-                 return interaction.reply({ embeds: [
-                    new MessageEmbed()
-                      .setTitle('ERROR: Unknown Error')
-                      .setColor(this.bot.colors.red)
-                      .setThumbnail(this.bot.logo)
-                      .setDescription('Whoops something went wrong here but i can\'t seem to figure out what!')
-                      .setTimestamp()
-                      .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                      })
-                 ] });
-            }
              
-
              break;
 
              case 'check':
+
+             if (await randomErrors(interaction.user.id)) {
+                return interaction.reply({ embeds: [
+                    new MessageEmbed()
+                     .setTitle('ERROR: Unknown Error')
+                     .setColor(this.bot.colors.red)
+                     .setThumbnail(this.bot.logo)
+                     .setDescription(`${await fetchRandomErrorMsg()}`)
+                     .setTimestamp()
+                     .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                     })
+                ]})
+    
+            } 
 
              let repId: any = await args.get('report_id')?.value;
              let repFetch: any = await sneekyReports.findOne({ userID: interaction.user.id, repID:  repId });

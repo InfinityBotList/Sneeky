@@ -69,7 +69,8 @@ export default class {
                 ]})
             }
         
-        } else if (!this.bot.admins.includes(interaction.user.id)) {
+        } /** LEAVE THIS DISABLED FOR NOW BUGGY
+        else if (!this.bot.admins.includes(interaction.user.id)) {
 
             if (!this.bot.cooldowns.has(command.name)) {
 
@@ -106,7 +107,7 @@ export default class {
             tStamps.set(interaction.user.id, timeNow);
             setTimeout(() => tStamps.delete(interaction.user.id, cdAmount));
         
-        } else {
+        } */else {
 
             interaction.subcommand = interaction.options.getSubcommand(false);
 

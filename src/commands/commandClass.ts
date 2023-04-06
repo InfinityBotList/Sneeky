@@ -8,6 +8,7 @@ export default class Command {
 	protected name: string;
 	protected aliases: string[];
 	protected options: Array<ICommandInfosArgs> | undefined;
+	protected usage: string | undefined;
 	protected category: string;
 	protected description: string;
 	protected cooldown: number;
@@ -18,14 +19,15 @@ export default class Command {
 		this.bot = bot;
 		this.colors = this.bot.colors;
 		this.util = this.bot.util;
-		this.name = options.name
-		this.aliases = options.aliases
-		this.options = options.options
-		this.category = options.category
-		this.description = options.description
-		this.cooldown = options.cooldown
-		this.userPermissions = options.userPermissions
-		this.botPermissions = options.botPermissions
-		this.subCommands = options.subCommands
+		this.name = options.name;
+		this.aliases = options.aliases;
+		this.usage = options.usage;
+		this.options = options.options;
+		this.category = options.category;
+		this.description = options.description;
+		this.cooldown = options.cooldown;
+		this.userPermissions = options.userPermissions;
+		this.botPermissions = options.botPermissions;
+		this.subCommands = options.subCommands;
 	}
 }

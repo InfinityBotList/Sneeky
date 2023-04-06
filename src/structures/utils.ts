@@ -2,6 +2,8 @@ const glob = require('glob');
 const { promisify } = require('util');
 import { sneekyProfile } from "../database/profile"
 import { MessageActionRow, MessageButton } from "discord.js";
+import Configuration from '../configuration/bot.config';
+import Onboarding from '../configuration/ibl.config';
 
 module.exports = {
   // @ts-ignore
@@ -96,5 +98,27 @@ module.exports = {
     let resultss = await cmds.map((cmd: any) => cmd.name).join(" , ");
 
     return resultss;
-  }
+  },
+  randomErrors: async function randomErrors(user: any) {
+
+    const paginate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const res = (paginate[Math.floor(Math.random() * paginate.length)])
+
+    if (res < 4 && !Configuration.ADMINS.includes(user) && Onboarding.SETTINGS.RANDOM_ERR) return true
+    else return false
+  },
+  fetchRandomErrorMsg: async function fetchRandomErrorMsg() {
+
+    const messages = [
+      "Whoops something went wrong here but i can\'t seem to figure out what!",
+      "MongoCollectionError: `messageloggerpro` not found in `interactionCreate.ts:40:31`",
+      "Error: `Unable to determine executable path to base configuration`",
+      "MongoError: `failed with error 13: not authorized for connection`",
+      "Discord.js: `Failed to execute interaction with reason: undefined`"
+    ]
+
+    const res = (messages[Math.floor(Math.random() * messages.length)]);
+
+    return res;
+  } 
 }

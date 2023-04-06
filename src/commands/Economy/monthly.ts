@@ -9,11 +9,11 @@ export default class extends Command {
 	constructor(bot: any) {
 
 		super(bot, {
-			name: 'daily',
-            usage: '/daily',
+			name: 'monthly',
+            usage: '/monthly',
 			aliases: [],
 			options: [],
-			description: 'Claim your daily prize',
+			description: 'Claim your monthly prize',
 			category: 'Economy',
 			cooldown: 5,
 			userPermissions: [],
@@ -38,58 +38,57 @@ export default class extends Command {
              })
         ]})
 
-        else if (!profile.lastDaily) {
-
-            await sneekyProfile.updateOne({ 
-                userId: interaction.user.id, 
-                guildId: interaction.guild!.id 
-            }, {
-                $set: { lastDaily: Date.now() }
-            })
-
-            await sneekyProfile.updateOne({
-                userId: interaction.user.id,
-                guildId: interaction.guild!.id
-            }, {
-                $inc: { wallet: 25 }
-            })
-
-            return interaction.reply({
-                embeds: [
-                    new MessageEmbed()
-                     .setTitle('Daily Rewards')
-                     .setThumbnail(this.bot.logo)
-                     .setColor(this.bot.colors.embed)
-                     .setDescription('You have collected today\'s earnings of \'$25\' come back tomorrow to claim again')
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-                ]
-            })
-        } else if (Date.now() - profile.lastDaily > 86400000) {
+        else if (!profile.lastMonthly) {
 
             await sneekyProfile.updateOne({
                 userId: interaction.user.id,
                 guildId: interaction.guild!.id
             },{
-                $set: { lastDaily: Date.now() }
+                $set: { lastMonthly: Date.now() }
             })
 
             await sneekyProfile.updateOne({
                 userId: interaction.user.id,
                 guildId: interaction.guild!.id
             },{
-                $inc: { wallet: 25 }
+                $inc: { wallet: 500 }
             })
 
             return interaction.reply({ embeds: [
                 new MessageEmbed()
-                 .setTitle('Daily Rewards')
-                 .setThumbnail(this.bot.logo)
+                 .setTitle('Monthly Rewards')
                  .setColor(this.bot.colors.embed)
-                 .setDescription('You have collected today\'s earnings of \'$25\' come back tomorrow to claim again')
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('You have collected your monthly earnings of `$500`. Come back next month for more')
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                 })
+            ]})
+
+        } else if (Date.now() - profile.lastMonthly > 2592000000) {
+
+            await sneekyProfile.updateOne({
+                userId: interaction.user.id,
+                guildId: interaction.guild!.id
+            },{
+                $set: { lastMonthly: Date.now() }
+            })
+
+            await sneekyProfile.updateOne({
+                userId: interaction.user.id,
+                guildId: interaction.guild!.id
+            },{
+                $inc: { wallet: 500 }
+            })
+
+            return interaction.reply({ embeds: [
+                new MessageEmbed()
+                 .setTitle('Monthly Rewards')
+                 .setColor(this.bot.colors.embed)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription('You have collected your monthly earnings of `$500`. Come back next month for more')
                  .setTimestamp()
                  .setFooter({
                     text: `${this.bot.credits}`,
@@ -99,18 +98,28 @@ export default class extends Command {
 
         } else {
 
-            const lastDaily = new Date(profile.lastDaily);
-            const timeLeft = Math.round((lastDaily.getTime() + 86400000 - Date.now()) / 1000);
+            const lastMonthly = new Date(profile.lastMonthly);
+            const timeLeft = Math.round((lastMonthly.getTime() + 2592000000 - Date.now()) / 1000);
             const hours = Math.floor(timeLeft / 3600);
             const minutes = Math.floor((timeLeft - hours * 3600) / 60);
             const seconds = timeLeft - hours * 3600 - minutes * 60;
 
             return interaction.reply({ embeds: [
                 new MessageEmbed()
-                 .setTitle('Error: Daily Claimed')
+                 .setTitle('ERROR: Monthly Claimed')
                  .setColor(this.bot.colors.red)
                  .setThumbnail(this.bot.logo)
-                 .setDescription(`Please wait: ${hours}h ${minutes}m ${seconds}s before you can claim your daily earnings again`)
+                 .setDescription('You have already claimed your monthly earnings.')
+                 .addFields(
+                    {
+                        name: 'Retry In',
+                        value: `${hours}h ${minutes}m ${seconds}s`
+                    },
+                    {
+                        name: 'Retry Date',
+                        value: `${new Date(Date.now() + 2592000000)}`
+                    }
+                 )
                  .setTimestamp()
                  .setFooter({
                     text: `${this.bot.credits}`,

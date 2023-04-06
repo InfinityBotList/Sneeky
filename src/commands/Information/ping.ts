@@ -9,6 +9,7 @@ export default class extends Command {
         
         super(bot, {
             name: 'ping',
+            usage: '/ping',
             aliases: [],
             options: [],
             description: 'Get the bots latency and ping',
@@ -21,8 +22,9 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
-        const debut = Date.now();
-        const msgInteraction = await interaction.channel!.send('Pinging please wait...');
+
+         const debut = Date.now();
+         const msgInteraction = await interaction.channel!.send('Pinging please wait...');
 
          await msgInteraction.delete();
 

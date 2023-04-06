@@ -1,6 +1,6 @@
 import Command from '../commandClass';
 import { MessageEmbed } from 'discord.js'
-import type { ICommandInteraction, ICommandArgs } from '../../typings/types';
+import type { ICommandInteraction } from '../../typings/types';
 import { sneekyProfile } from '../../database/profile';
 
 export default class extends Command {
@@ -9,6 +9,7 @@ export default class extends Command {
 
 		super(bot, {
 			name: 'balance',
+            usage: '/balance <user>',
 			aliases: [],
 			options: [
                 {
@@ -26,13 +27,10 @@ export default class extends Command {
 			subCommands: [],
 		})
 	}
-	async execute(interaction: ICommandInteraction, args: ICommandArgs) {
-		const argUser = await args.get('user')?.value;
+	async execute(interaction: ICommandInteraction) {
+		let user = await interaction.options.getUser('user');
 
-        let user;
-
-        if (!user) user = await this.bot.util.resolveMember(interaction.guild!, `${interaction.user}`);
-        else user = await this.bot.util.resolveMember(interaction.guild!, argUser);
+        if (!user) user = interaction.user;
 
         let profile = await sneekyProfile.findOne({ userId: user.id, guildId: interaction.guild!.id });
 
@@ -42,7 +40,7 @@ export default class extends Command {
              .setTitle('ERROR: No Profile')
              .setThumbnail(this.bot.logo)
              .setColor(this.bot.colors.red)
-             .setDescription(`Hold up chief: ${user.user.username} has no economy profile`)
+             .setDescription(`Hold up chief: ${user.username} has no economy profile`)
              .addFields(
                 {
                     name: 'Next Steps',
@@ -59,8 +57,8 @@ export default class extends Command {
         else return interaction.reply({ embeds: [
 
             new MessageEmbed()
-             .setTitle(`Balance for: ${user.user.username}`)
-             .setThumbnail(user.user.displayAvatarURL({ dynamic: true }))
+             .setTitle(`Balance for: ${user.username}`)
+             .setThumbnail(user.displayAvatarURL({ dynamic: true }))
              .setColor(this.bot.colors.embed)
              .addFields(
                 {

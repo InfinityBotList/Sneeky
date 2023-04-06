@@ -10,6 +10,7 @@ export default class extends Command {
 
 		super(bot, {
 			name: 'profile',
+      usage: '/profile create',
 			aliases: [],
 			options: [],
 			description: 'View or Create a Economy Profile',

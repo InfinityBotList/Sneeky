@@ -49,6 +49,7 @@ export interface ICommandOptions {
     name: string;
     aliases: string[];
     args?: Array<ICommandInfosArgs>;
+    usage?: string;
     options?: Array<ICommandInfosArgs>;
     category: string;
     description: string;
