@@ -3,6 +3,7 @@ import { MessageEmbed } from 'discord.js'
 import type { ICommandInteraction } from '../../typings/types';
 import { sneekyProfile } from '../../database/profile';
 const { findProfile } = require('../../structures/utils');
+const { randomErrors, fetchRandomErrorMsg } = require('../../structures/utils');
 
 export default class extends Command {
 
@@ -22,6 +23,22 @@ export default class extends Command {
 		})
 	}
 	async execute(interaction: ICommandInteraction) {
+
+        if (await randomErrors(interaction.user.id)) {
+            return interaction.reply({ embeds: [
+                new MessageEmbed()
+                 .setTitle('ERROR: Unknown Error')
+                 .setColor(this.bot.colors.red)
+                 .setThumbnail(this.bot.logo)
+                 .setDescription(`${await fetchRandomErrorMsg()}`)
+                 .setTimestamp()
+                 .setFooter({
+                    text: `${this.bot.credits}`,
+                    iconURL: `${this.bot.logo}`
+                 })
+            ]})
+
+        } 
 
         const profile = await findProfile(interaction.user, interaction.guild!)
 
