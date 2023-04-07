@@ -62,8 +62,14 @@ export interface ICommandOptions {
 export interface ICommandInfosArgs {
 	name: string;
 	description: string;
+    choices?: Array<ICommandChoices>;
 	type: string;
 	required: boolean;
+}
+
+export interface ICommandChoices {
+    name: string;
+    value: any
 }
 
 export interface ICommandInteraction extends CommandInteraction {

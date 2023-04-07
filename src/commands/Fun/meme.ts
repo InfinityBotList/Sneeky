@@ -24,8 +24,6 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
-        
-        try {
 
         await interaction.reply({
             embeds: [
@@ -52,13 +50,9 @@ export default class extends Command {
                 new MessageActionRow()
                 .addComponents([
                     new MessageButton()
-                     .setLabel('Close Interaction')
+                     .setLabel('Close Generator')
                      .setStyle('DANGER')
                      .setCustomId('close-memes'),
-                    new MessageButton()
-                     .setLabel('Main Menu')
-                     .setStyle('SECONDARY')
-                     .setCustomId('main-menu'),
                     new MessageButton()
                      .setLabel('Generate Meme')
                      .setStyle('PRIMARY')
@@ -103,10 +97,10 @@ export default class extends Command {
                 
                 const safeContent = nsfwCheck ? meme2.data.children : meme2.data.children.filter((post: any)=> !post.data.over_18);
                 
-                if (!safeContent.length) return interaction.reply({
+                if (!safeContent.length || !safeContent) return interaction.reply({
                     embeds: [
                         new MessageEmbed()
-                        .setTitle('ERROR: Invalid Channel Type')
+                        .setTitle('ERROR: Out of Memes')
                         .setColor(this.bot.colors.red)
                         .setThumbnail(this.bot.logo)
                         .setDescription('Whoops, we are all out of fresh memes for you! check back later')
@@ -151,31 +145,7 @@ export default class extends Command {
                          })
                     ]
                 })
-            } else if (i.customId === 'main-menu') {
-
-                await i.deferUpdate();
-
-                return i.editReply({
-                    embeds: [
-                        new MessageEmbed()
-                         .setTitle('Meme Generator')
-                         .setColor(this.bot.colors.embed)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('Hey there chief! welcome to our meme gen xD Click the button below to start generating your memes!')
-                         .addFields(
-                            {
-                                name: 'PLEASE NOTE',
-                                value: "These memes are generated from reddit and may contain nsfw content. We have filters in place to check for this but this system is not guaranteed",
-                                inline: false
-                            }
-                         )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                    ]
-                })
+                
             } else if (i.customId === 'close-memes') {
 
                 await i.deferUpdate();
@@ -199,37 +169,5 @@ export default class extends Command {
 
             }
         })
-      } catch (e: any) {
-
-        await console.log(e.stack)
-
-        await this.bot.log({ embeds: [
-            new MessageEmbed()
-             .setTitle('Reddit API Error')
-             .setColor(this.bot.colors.red)
-             .setThumbnail(this.bot.logo)
-             .setDescription(`${"```" + e.stack + "```"}`)
-             .setTimestamp()
-             .setFooter({
-                text: `${this.bot.credits}`,
-                iconURL: `${this.bot.logo}`
-             })
-        ]})
-
-        return interaction.reply({
-            embeds: [
-                new MessageEmbed()
-                 .setTitle('ERROR: Request Failed')
-                 .setColor(this.bot.colors.red)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription(`Reason: ${"``" + e.message + "``"}`)
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-            ]
-        })
-      }
     }
 }
