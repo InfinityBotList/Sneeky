@@ -245,7 +245,7 @@ export default class extends Command {
                     await interaction.update({
                         embeds: [
                             new MessageEmbed()
-                                .setTitle('Support Commands')
+                                .setTitle('Image Commands')
                                 .setColor(this.bot.colors.embed)
                                 .setThumbnail(this.bot.logo)
                                 .setDescription('You can use `/help <cmdName>` to view command related help')
@@ -268,7 +268,7 @@ export default class extends Command {
                     await interaction.update({
                         embeds: [
                             new MessageEmbed()
-                                .setTitle('Support Commands')
+                                .setTitle('NSFW Commands')
                                 .setColor(this.bot.colors.embed)
                                 .setThumbnail(this.bot.logo)
                                 .setDescription('You can use `/help <cmdName>` to view command related help')

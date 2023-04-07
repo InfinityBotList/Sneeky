@@ -20,7 +20,7 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
-        if (interaction.channel?.type === 'GUILD_TEXT') {
+        /**if (interaction.channel?.type === 'GUILD_TEXT') {
             if (!interaction.channel.nsfw) {
                 return interaction.reply({
                     embeds: [
@@ -38,7 +38,7 @@ export default class extends Command {
                             })
                     ]
                 })
-            } else {
+            } else {*/
                 const res = await fetch(`https://nekobot.xyz/api/image?type=pgif`).then(r => r.json())
 
                 await interaction.reply({
@@ -120,6 +120,6 @@ export default class extends Command {
                     }
                 })
             }
-        }
-    }
+        /**}
+    }*/
 }
