@@ -98,7 +98,7 @@ export default class extends Command {
                                 description: 'View all the support category commands'
                             },
                             {
-                                label: "Image Commands",
+                                label: 'Image Commands',
                                 value: 'image',
                                 description: 'View all the image category commands'
                             },
@@ -106,7 +106,7 @@ export default class extends Command {
                                 label: 'NSFW Commands',
                                 value: 'nsfw',
                                 description: 'View all of the nsfw category commands'
-                            },
+                            }
                         ])
                 )
             ]

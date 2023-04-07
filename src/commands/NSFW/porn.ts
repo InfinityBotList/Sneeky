@@ -39,87 +39,82 @@ export default class extends Command {
                     ]
                 })
             } else {*/
-                const res = await fetch(`https://nekobot.xyz/api/image?type=pgif`).then(r => r.json())
+        const res = await fetch(`https://nekobot.xyz/api/image?type=pgif`).then(r => r.json())
 
-                await interaction.reply({
+        await interaction.reply({
+            embeds: [
+                new MessageEmbed()
+                    .setTitle('Here you go!')
+                    .setColor(this.bot.colors.embed)
+                    .setThumbnail(this.bot.logo)
+                    .setImage(res.message)
+                    .setTimestamp()
+                    .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                    })
+            ],
+            components: [
+                new MessageActionRow().addComponents([
+                    new MessageButton().setLabel('Close Generator').setStyle('DANGER').setCustomId('close-nsfw'),
+                    new MessageButton().setLabel('Next Image').setStyle('PRIMARY').setCustomId('generate-nsfw')
+                ])
+            ],
+            fetchReply: true
+        })
+
+        const collector = await interaction.channel!.createMessageComponentCollector({
+            filter: (fn: any) => fn,
+            componentType: 'BUTTON',
+            time: 1000 * 15
+        })
+
+        collector.on('collect', async (i: any) => {
+            if (i.customId === 'generate-nsfw') {
+                await i.deferUpdate()
+
+                const res2 = await fetch(`https://nekobot.xyz/api/image?type=pgif`).then(r => r.json())
+
+                return i.editReply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle('Here you go!')
+                            .setTitle('This is awkward')
                             .setColor(this.bot.colors.embed)
                             .setThumbnail(this.bot.logo)
-                            .setImage(res.message)
+                            .setImage(res2.message)
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
                                 iconURL: `${this.bot.logo}`
                             })
-                    ],
-                    components: [
-                        new MessageActionRow().addComponents([
-                            new MessageButton()
-                                .setLabel('Close Generator')
-                                .setStyle('DANGER')
-                                .setCustomId('close-nsfw'),
-                            new MessageButton().setLabel('Next Image').setStyle('PRIMARY').setCustomId('generate-nsfw')
-                        ])
-                    ],
-                    fetchReply: true
+                    ]
+                })
+            } else if (i.customId === 'close-nsfw') {
+                await i.deferReply()
+
+                await i.editReply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle('Closing NSFW Generator')
+                            .setColor(this.bot.colors.red)
+                            .setThumbnail('https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif')
+                            .setDescription('This may take a few seconds')
+                            .setTimestamp()
+                            .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                            })
+                    ]
                 })
 
-                const collector = await interaction.channel!.createMessageComponentCollector({
-                    filter: (fn: any) => fn,
-                    componentType: 'BUTTON',
-                    time: 1000 * 15
-                })
+                setTimeout(async () => {
+                    await i.deleteReply()
+                }, 3000)
 
-                collector.on('collect', async (i: any) => {
-                    if (i.customId === 'generate-nsfw') {
-                        await i.deferUpdate()
-
-                        const res2 = await fetch(`https://nekobot.xyz/api/image?type=pgif`).then(r => r.json())
-
-                        return i.editReply({
-                            embeds: [
-                                new MessageEmbed()
-                                    .setTitle('This is awkward')
-                                    .setColor(this.bot.colors.embed)
-                                    .setThumbnail(this.bot.logo)
-                                    .setImage(res2.message)
-                                    .setTimestamp()
-                                    .setFooter({
-                                        text: `${this.bot.credits}`,
-                                        iconURL: `${this.bot.logo}`
-                                    })
-                            ]
-                        })
-                    } else if (i.customId === 'close-nsfw') {
-                        await i.deferReply()
-
-                        await i.editReply({
-                            embeds: [
-                                new MessageEmbed()
-                                    .setTitle('Closing NSFW Generator')
-                                    .setColor(this.bot.colors.red)
-                                    .setThumbnail(
-                                        'https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif'
-                                    )
-                                    .setDescription('This may take a few seconds')
-                                    .setTimestamp()
-                                    .setFooter({
-                                        text: `${this.bot.credits}`,
-                                        iconURL: `${this.bot.logo}`
-                                    })
-                            ]
-                        })
-
-                        setTimeout(async () => {
-                            await i.deleteReply()
-                        }, 3000)
-
-                        return interaction.deleteReply()
-                    }
-                })
+                return interaction.deleteReply()
             }
-        /**}
+        })
+    }
+    /**}
     }*/
 }
