@@ -13,7 +13,88 @@ export default class extends Command {
             name: 'meme',
             usage: '/meme',
             aliases: [],
-            options: [],
+            options: [
+                {
+                    name: 'category',
+                    description: 'The category to fetch',
+                    required: true,
+                    type: 'STRING',
+                    choices: [
+                        {
+                            name: 'Cat Memes',
+                            value: 'catmemes.json'
+                        },
+                        {
+                            name: 'Dev Memes',
+                            value: 'devmemes.json'
+                        },
+                        {
+                            name: 'Dank Memes',
+                            value: 'dankmemes.json'
+                        },
+                        {
+                            name: 'Discord Memes',
+                            value: 'discordmemes.json'
+                        },
+                        {
+                            name: 'Dog Memes',
+                            value: 'dogmemes.json'
+                        },
+                        { 
+                            name: 'Funny Memes',
+                            value: 'funnymemes.json'
+                        },
+                        {
+                            name: 'Gaming Memes',
+                            value: 'gamingmemes.json'
+                        }
+                    ]
+                },
+                {
+                    name: 'sort',
+                    description: 'Sort by',
+                    required: true,
+                    type: 'STRING',
+                    choices: [
+                        {
+                            name: 'Top Posts',
+                            value: '?sort=top'
+                        },
+                        {
+                            name: 'New Posts',
+                            value: '?sort=new'
+                        }
+                    ]
+                },
+                {
+                    name: 'limit',
+                    description: 'Amount of memes to fetch',
+                    required: true,
+                    type: 'STRING',
+                    choices: [
+                        {
+                            name: '1 (Recommend)',
+                            value: '?limit=1'
+                        },
+                        {
+                            name: '2 (Buggy)',
+                            value: '?limit=2'
+                        },
+                        {
+                            name: '3 (Buggy)',
+                            value: '?limit=3',
+                        },
+                        {
+                            name: '4 (Buggy)',
+                            value: '?limit=4',
+                        },
+                        {
+                            name: '5 (Buggy)',
+                            value: '?limit=5',
+                        }
+                    ]
+                }
+            ],
             description: 'Send a random meme',
             category: 'Fun',
             cooldown: 5,
@@ -25,44 +106,38 @@ export default class extends Command {
 
     async execute(interaction: ICommandInteraction) {
 
+        const category = await interaction.options.get('category')?.value;
+        const limit = await interaction.options.get('limit')?.value;
+        const sort = await interaction.options.get('sort')?.value;
+
+        let resolved: string = `${category}`
+
         await interaction.reply({
             embeds: [
                 new MessageEmbed()
                  .setTitle('Meme Generator')
                  .setColor(this.bot.colors.embed)
                  .setThumbnail(this.bot.logo)
-                 .setDescription('Hey there chief! welcome to our meme gen xD Click the button below to start generating your memes!')
-                 .addFields(
-                    {
-                        name: 'PLEASE NOTE',
-                        value: "These memes are generated from reddit and may contain nsfw content. We have filters in place to check for this but this system is not guaranteed",
-                        inline: false
-                    }
-                 )
+                 .setDescription('Hey there chief! use the button below to start generating your memes')
+                 .addFields({
+                    name: 'Selected Category',
+                    value: `${resolved.replace('?', '').toUpperCase().replace('.JSON', '')}`,
+                    inline: false
+                 })
                  .setTimestamp()
                  .setFooter({
                     text: `${this.bot.credits}`,
                     iconURL: `${this.bot.logo}`
                  })
-                 
             ],
             components: [
-                new MessageActionRow()
-                .addComponents([
-                    new MessageButton()
-                     .setLabel('Close Generator')
-                     .setStyle('DANGER')
-                     .setCustomId('close-memes'),
-                    new MessageButton()
-                     .setLabel('Generate Meme')
-                     .setStyle('PRIMARY')
-                     .setCustomId('refresh-button'),
+                new MessageActionRow().addComponents([
+                    new MessageButton().setLabel('Close Generator').setStyle('DANGER').setCustomId('close-memes'),
+                    new MessageButton().setLabel('Generate Meme').setStyle('PRIMARY').setCustomId('generate-meme')
                 ])
             ],
             fetchReply: true
-        }).then(() => {
-            
-        })
+        });
 
         const collector = await interaction.channel!.createMessageComponentCollector({
             filter: (fn: any) => fn,
@@ -72,69 +147,67 @@ export default class extends Command {
 
         collector.on('collect', async (i: any) => {
 
-            if (i.user.id !== interaction.user.id)
-            return i.reply({
-                content: 'Only the interaction author can complete this action',
-                ephemeral: true
-            });
-
-            if (i.customId === 'refresh-button') {
+            if (i.customId === 'generate-meme') {
 
                 await i.deferUpdate();
 
-                const meme2: any = await fetch('https://www.reddit.com/r/dankmemes.json?sort=top&t=week?limit=1').then(r => r.json());
-                
-                let nsfwCheck;
+                const meme = await fetch(`https://reddit.com/r/${category}${sort}&t=week${limit}`).then(r => r.json());
+
+                let nsfwCheck
                 let chan = this.bot.util.resolveChannel(interaction.guild!, `${interaction.channel}`);
 
-                if (chan.type === "GUILD_TEXT") {
+                if (chan.type === 'GUILD_TEXT') {
                     if ((chan as TextChannel).nsfw) {
-                        nsfwCheck = true;
+                        nsfwCheck = true
                     } else {
-                        nsfwCheck = false;
+                        nsfwCheck = false
                     }
                 }
-                
-                const safeContent = nsfwCheck ? meme2.data.children : meme2.data.children.filter((post: any)=> !post.data.over_18);
-                
-                if (!safeContent.length || !safeContent) return interaction.reply({
-                    embeds: [
-                        new MessageEmbed()
-                        .setTitle('ERROR: Out of Memes')
-                        .setColor(this.bot.colors.red)
-                        .setThumbnail(this.bot.logo)
-                        .setDescription('Whoops, we are all out of fresh memes for you! check back later')
-                        .setTimestamp()
-                        .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                        })
-                    ]
-                });
-                
-                const randomMemeFromJson = Math.floor(Math.random() * safeContent.length);
+
+                const safeContent = nsfwCheck ? meme.data.children : meme.data.children.filter((post: any) => !post.data.over_18);
+
+                if (!safeContent.length || !safeContent) {
+
+                    return i.editReply({
+                        embeds: [
+                            new MessageEmbed()
+                             .setTitle('ERROR: Out of Memes')
+                             .setColor(this.bot.colors.red)
+                             .setThumbnail(this.bot.logo)
+                             .setDescription('Whoops, we are all out of fresh memes for you! check back later')
+                             .setTimestamp()
+                             .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                             })
+                        ]
+                    })
+                }
+
+                const randomMeme = Math.floor(Math.random() * safeContent.length);
 
                 return i.editReply({
                     embeds: [
                         new MessageEmbed()
-                         .setTitle(safeContent[randomMemeFromJson].data.title)
+                         .setTitle(`${safeContent[randomMeme].data.title}`)
                          .setColor(this.bot.colors.embed)
                          .setThumbnail(this.bot.logo)
-                         .setImage(safeContent[randomMemeFromJson].data.url)
+                         .setImage(safeContent[randomMeme].data.url)
+                         .setURL(`https://reddit.com/${safeContent[randomMeme].data.subreddit_name_prefixed}`)
                          .addFields(
                             {
                                 name: 'Author',
-                                value: `👨‍💻 ${"`" + safeContent[randomMemeFromJson].data.author + "`"}`,
+                                value: `👨‍💻 ${'`' + safeContent[randomMeme].data.author + '`'}`,
                                 inline: true
                             },
                             {
                                 name: 'Upvotes',
-                                value: ` 👍 ${"`" + safeContent[randomMemeFromJson].data.ups + "`"}`,
+                                value: ` 👍 ${'`' + safeContent[randomMeme].data.ups + '`'}`,
                                 inline: true
                             },
                             {
                                 name: 'Comments',
-                                value: `💬 ${"`" + safeContent[randomMemeFromJson].data.num_comments + "`"}`,
+                                value: `💬 ${'`' + safeContent[randomMeme].data.num_comments + '`'}`,
                                 inline: true
                             }
                          )
@@ -145,12 +218,11 @@ export default class extends Command {
                          })
                     ]
                 })
-                
             } else if (i.customId === 'close-memes') {
 
-                await i.deferUpdate();
+                await i.deferReply();
 
-                await i.editReply({ 
+                await i.editReply({
                     embeds: [
                         new MessageEmbed()
                          .setTitle('Closing Meme Generator')
@@ -165,8 +237,13 @@ export default class extends Command {
                     ]
                 })
 
-                setTimeout(() => interaction.deleteReply(), 5000);
+                setTimeout(async () => { 
+                    
+                    await i.deleteReply();
 
+                }, 3000);
+
+                return interaction.deleteReply();
             }
         })
     }

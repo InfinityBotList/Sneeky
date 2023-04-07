@@ -91,12 +91,17 @@ export default class extends Command {
                             value: 'economy',
                             description: 'View all the economy category commands'
                         },
-                        /**{
+                        {
                             label: "Fun Commands",
                             value: 'fun',
                             description: 'View all the fun category commands'
                         },
                         {
+                            label: "Support Commands",
+                            value: 'support',
+                            description: 'View all the support category commands'
+                        }
+                        /**{
                             label: "Image Commands",
                             value: 'image',
                             description: 'View all the image category commands'
@@ -163,7 +168,7 @@ export default class extends Command {
                              .setTitle('Information Commands')
                              .setColor(this.bot.colors.embed)
                              .setThumbnail(this.bot.logo)
-                             .setDescription('You can use `/help <cmdName> to view command related help`')
+                             .setDescription('You can use `/help <cmdName>` to view command related help')
                              .addFields(
                                 {
                                     name: 'Available Commands',
@@ -185,11 +190,57 @@ export default class extends Command {
                              .setTitle('Economy Commands')
                              .setColor(this.bot.colors.embed)
                              .setThumbnail(this.bot.logo)
-                             .setDescription('You can use `/help <cmdName> to view command related help`')
+                             .setDescription('You can use `/help <cmdName>` to view command related help')
                              .addFields(
                                 {
                                     name: 'Available Commands',
                                     value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Economy').map((cmd: any) => cmd.name).join(" , ")}`,
+                                    inline: false
+                                }
+                             )
+                             .setTimestamp()
+                             .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                             })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'fun') {
+
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                             .setTitle('Fun Commands')
+                             .setColor(this.bot.colors.embed)
+                             .setThumbnail(this.bot.logo)
+                             .setDescription('You can use `/help <cmdName>` to view command related help')
+                             .addFields(
+                                {
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Fun').map((cmd: any) => cmd.name).join(" , ")}`,
+                                    inline: false
+                                }
+                             )
+                             .setTimestamp()
+                             .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                             })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'support') {
+
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                             .setTitle('Support Commands')
+                             .setColor(this.bot.colors.embed)
+                             .setThumbnail(this.bot.logo)
+                             .setDescription('You can use `/help <cmdName>` to view command related help')
+                             .addFields(
+                                {
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands.filter((cmd: any) => cmd.category === 'Support').map((cmd: any) => cmd.name).join(" , ")}`,
                                     inline: false
                                 }
                              )

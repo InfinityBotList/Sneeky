@@ -24,6 +24,8 @@ export default class extends Command {
 
         const profiles = await sneekyProfile.find({ guildId: interaction.guild!.id });
 
+        let baseNumber: number = 1;
+
         if (!profiles.length) return interaction.reply({ embeds: [
             new MessageEmbed()
              .setTitle('Error: No Profiles Found')
@@ -52,7 +54,7 @@ export default class extends Command {
 
                 embed.addFields(
                     {
-                        name: `${user?.username}`,
+                        name: `${baseNumber++}. ${user?.username}`,
                         value: `Wallet: ${"$" + profile.wallet} Bank: ${"$" + profile.bank}`,
                         inline: false
                     }

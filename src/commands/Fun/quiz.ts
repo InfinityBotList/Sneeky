@@ -181,6 +181,8 @@ export default class extends Command {
         quiz.incorrect_answers.push(quiz.correct_answer);
         shuffleArray(quiz.incorrect_answers);
 
+        console.log(quiz.correct_answer)
+
         await interaction.reply({
             embeds: [
               new MessageEmbed()
@@ -190,23 +192,11 @@ export default class extends Command {
                 .setDescription(question)
                 .addFields(
                     {
-                        name: 'A',
-                        value: `${decode(quiz.incorrect_answers[0])}`,
-                        inline: false
-                    },
-                    {
-                        name: 'B',
-                        value: `${decode(quiz.incorrect_answers[1])}`,
-                        inline: false
-                    },
-                    {
-                        name: 'C',
-                        value: `${decode(quiz.incorrect_answers[2])}`,
-                        inline: false
-                    },
-                    {
-                        name: 'C',
-                        value: `${decode(quiz.incorrect_answers[3])}`,
+                        name: 'Choices',
+                        value: `A. ${decode(quiz.incorrect_answers[0])}\n
+                        B. ${decode(quiz.incorrect_answers[1])}\n
+                        C. ${decode(quiz.incorrect_answers[2])}\n
+                        D. ${decode(quiz.incorrect_answers[3])}`,
                         inline: false
                     }
                 )
@@ -307,35 +297,5 @@ export default class extends Command {
                 })
             }
         });
-
-        collector.on('end', async () => {
-
-            interaction.editReply({ 
-                embeds: [
-                    new MessageEmbed()
-                     .setTitle(`${quiz.category}`)
-                     .setColor(this.bot.colors.embed)
-                     .setThumbnail(this.bot.logo)
-                     .setDescription('You failed to provide a response')
-                     .addFields(
-                        {
-                            name: `Question`,
-                            value: `${question}`,
-                            inline: false
-                        },
-                        {
-                            name: 'Expected Answer',
-                            value: `${quiz.correct_answer}`,
-                            inline: false
-                        }
-                     )
-                     .setTimestamp()
-                     .setFooter({
-                        text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                     })
-                ]
-            })
-        })
     }
 }
