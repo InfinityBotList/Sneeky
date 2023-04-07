@@ -21,7 +21,7 @@ export default class extends Command {
                 }
             ],
             description: 'Sends a yomomma joke',
-            category: 'Information',
+            category: 'Fun',
             cooldown: 5,
             userPermissions: [],
             botPermissions: [],

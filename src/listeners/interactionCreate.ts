@@ -117,7 +117,7 @@ export default class {
             
                 await command.execute(interaction, args);
             
-            } catch(e) {
+            } catch(e: any) {
 
                  await interaction.reply({ embeds: [
                     new MessageEmbed()
@@ -143,7 +143,7 @@ export default class {
                      })
                  ] });
 
-                 logger.error(e);
+                 logger.error(e.message);
             }
         }
     }
