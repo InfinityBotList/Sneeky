@@ -96,27 +96,17 @@ export default class extends Command {
                                 label: 'Support Commands',
                                 value: 'support',
                                 description: 'View all the support category commands'
-                            }
-                            /**{
-                            label: "Image Commands",
-                            value: 'image',
-                            description: 'View all the image category commands'
-                        },
-                        {
-                            label: "Moderation Commands",
-                            value: 'mod',
-                            description: 'View all the moderation category commands'
-                        },
-                        {
-                            label: 'NSFW Commands',
-                            value: 'nsfw',
-                            description: 'View all of the nsfw category commands'
-                        },
-                        {
-                            label: 'Utility Commands',
-                            value: 'util',
-                            description: 'View all of the utility category commands'
-                        }*/
+                            },
+                            {
+                                label: "Image Commands",
+                                value: 'image',
+                                description: 'View all the image category commands'
+                            },
+                            {
+                                label: 'NSFW Commands',
+                                value: 'nsfw',
+                                description: 'View all of the nsfw category commands'
+                            },
                         ])
                 )
             ]
@@ -240,6 +230,52 @@ export default class extends Command {
                                     name: 'Available Commands',
                                     value: `${this.bot.commands
                                         .filter((cmd: any) => cmd.category === 'Support')
+                                        .map((cmd: any) => cmd.name)
+                                        .join(' , ')}`,
+                                    inline: false
+                                })
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'image') {
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('Support Commands')
+                                .setColor(this.bot.colors.embed)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription('You can use `/help <cmdName>` to view command related help')
+                                .addFields({
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands
+                                        .filter((cmd: any) => cmd.category === 'Images')
+                                        .map((cmd: any) => cmd.name)
+                                        .join(' , ')}`,
+                                    inline: false
+                                })
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'nsfw') {
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('Support Commands')
+                                .setColor(this.bot.colors.embed)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription('You can use `/help <cmdName>` to view command related help')
+                                .addFields({
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands
+                                        .filter((cmd: any) => cmd.category === 'NSFW')
                                         .map((cmd: any) => cmd.name)
                                         .join(' , ')}`,
                                     inline: false
