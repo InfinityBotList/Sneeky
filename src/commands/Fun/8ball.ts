@@ -1,12 +1,9 @@
-import Command from '../commandClass';
-import type { ICommandInteraction } from '../../typings/types';
-import { MessageEmbed } from 'discord.js';
-
+import Command from '../commandClass'
+import type { ICommandInteraction } from '../../typings/types'
+import { MessageEmbed } from 'discord.js'
 
 export default class extends Command {
-
     constructor(bot: any) {
-        
         super(bot, {
             name: '8ball',
             usage: '/8ball <question>',
@@ -22,17 +19,13 @@ export default class extends Command {
             description: 'Ask the magic 8ball a question',
             category: 'Fun',
             cooldown: 5,
-            userPermissions: [
-                "MANAGE_MESSAGES",
-                "MODERATE_MEMBERS"
-            ],
+            userPermissions: ['MANAGE_MESSAGES', 'MODERATE_MEMBERS'],
             botPermissions: [],
             subCommands: []
         })
     }
 
     async execute(interaction: ICommandInteraction) {
-
         const answers = [
             'It is certain',
             'It is decidedly so',
@@ -54,30 +47,30 @@ export default class extends Command {
             'My sources say no',
             'Outlook not so good',
             'Very doubtful'
-          ];
+        ]
 
-          return interaction.reply({
+        return interaction.reply({
             embeds: [
                 new MessageEmbed()
-                 .setTitle('8Ball Results')
-                 .setColor(this.bot.colors.embed)
-                 .setThumbnail(this.bot.logo)
-                 .addFields(
-                    {
-                        name: 'You Asked',
-                        value: `${interaction.options.getString('question')}`
-                    },
-                    {
-                        name: '8Ball Says',
-                        value: `${answers[Math.floor(Math.random() * answers.length)]}`
-                    }
-                 )
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
+                    .setTitle('8Ball Results')
+                    .setColor(this.bot.colors.embed)
+                    .setThumbnail(this.bot.logo)
+                    .addFields(
+                        {
+                            name: 'You Asked',
+                            value: `${interaction.options.getString('question')}`
+                        },
+                        {
+                            name: '8Ball Says',
+                            value: `${answers[Math.floor(Math.random() * answers.length)]}`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                    })
             ]
-          })
+        })
     }
 }

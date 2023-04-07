@@ -1,9 +1,9 @@
-import { Intents } from 'discord.js';
+import { Intents } from 'discord.js'
 
 const IClientInteractions = {
     AutoMod: {
         Config: Intents.FLAGS.AUTO_MODERATION_CONFIGURATION,
-        Execute: Intents.FLAGS.AUTO_MODERATION_EXECUTION 
+        Execute: Intents.FLAGS.AUTO_MODERATION_EXECUTION
     },
     Guilds: {
         BaseIntent: Intents.FLAGS.GUILDS,
@@ -23,4 +23,4 @@ const IClientInteractions = {
     }
 }
 
-export default IClientInteractions;
+export default IClientInteractions
