@@ -14,9 +14,9 @@ export default class extends Command {
                     description: 'User to get the avatar for',
                     required: false,
                     type: 'USER'
-                },
+                }
             ],
-            description: 'View a user\'s avatar',
+            description: "View a user's avatar",
             category: 'Utility',
             cooldown: 5,
             userPermissions: [],
@@ -26,21 +26,25 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
+        const user = (await interaction.options.getUser('user')) || interaction.user
 
-        const user = await interaction.options.getUser('user') || interaction.user;
+        await user.fetch(true)
 
-        await user.fetch(true);
-
-        return interaction.reply({ embeds: [
-            new MessageEmbed()
-             .setTitle(`Avatar for: ${user.tag}`)
-             .setColor(this.bot.colors.embed)
-             .setImage(user.displayAvatarURL({ dynamic: true}) || 'https://i.pinimg.com/736x/35/79/3b/35793b67607923a68d813a72185284fe.jpg')
-             .setTimestamp()
-             .setFooter({
-                text: `${this.bot.credits}`,
-                iconURL: `${this.bot.logo}`
-             })
-        ]})
+        return interaction.reply({
+            embeds: [
+                new MessageEmbed()
+                    .setTitle(`Avatar for: ${user.tag}`)
+                    .setColor(this.bot.colors.embed)
+                    .setImage(
+                        user.displayAvatarURL({ dynamic: true }) ||
+                            'https://i.pinimg.com/736x/35/79/3b/35793b67607923a68d813a72185284fe.jpg'
+                    )
+                    .setTimestamp()
+                    .setFooter({
+                        text: `${this.bot.credits}`,
+                        iconURL: `${this.bot.logo}`
+                    })
+            ]
+        })
     }
 }

@@ -105,8 +105,6 @@ class Bot {
         })
     }
 
-    
-
     private handleErrs() {
         process.on('uncaughtException', error => {
             console.warn(error)

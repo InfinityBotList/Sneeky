@@ -1,6 +1,6 @@
 const glob = require('glob')
 const { promisify } = require('util')
-const axios = require('axios').default;
+const axios = require('axios').default
 import { sneekyProfile } from '../database/profile'
 import { MessageActionRow, MessageButton } from 'discord.js'
 import Configuration from '../configuration/bot.config'
@@ -127,18 +127,18 @@ module.exports = {
     },
     getResponse: async function getResponse(url: any) {
         try {
-          const res = await axios.get(url);
-          return {
-            success: true,
-            status: res.status,
-            data: res.data
-          };
+            const res = await axios.get(url)
+            return {
+                success: true,
+                status: res.status,
+                data: res.data
+            }
         } catch (error: any) {
-          return {
-            success: false,
-            status: error.response?.status,
-            data: error.response?.data
-          };
+            return {
+                success: false,
+                status: error.response?.status,
+                data: error.response?.data
+            }
         }
-      },
+    }
 }

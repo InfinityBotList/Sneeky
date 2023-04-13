@@ -73,9 +73,7 @@ export default class {
                         ]
                     })
             }
-
         } else {
-
             interaction.subcommand = interaction.options.getSubcommand(false)
 
             let args: any = interaction.options

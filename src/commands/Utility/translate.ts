@@ -1,7 +1,7 @@
 import Command from '../commandClass'
 import type { ICommandInteraction } from '../../typings/types'
 import { MessageEmbed } from 'discord.js'
-const translate = require('@iamtraction/google-translate');
+const translate = require('@iamtraction/google-translate')
 
 export default class extends Command {
     constructor(bot: any) {
@@ -131,104 +131,104 @@ export default class extends Command {
                     type: 'STRING',
                     choices: [
                         {
-                          name: 'English',
-                          value: 'en'
+                            name: 'English',
+                            value: 'en'
                         },
                         {
-                          name: 'Mandarin Chinese',
-                          value: 'zh-cn'
+                            name: 'Mandarin Chinese',
+                            value: 'zh-cn'
                         },
                         {
-                          name: 'Spanish',
-                          value: 'es'
+                            name: 'Spanish',
+                            value: 'es'
                         },
                         {
-                          name: 'Hindi',
-                          value: 'hi'
+                            name: 'Hindi',
+                            value: 'hi'
                         },
                         {
-                          name: 'Arabic',
-                          value: 'ar'
+                            name: 'Arabic',
+                            value: 'ar'
                         },
                         {
-                          name: 'Malay',
-                          value: 'ms'
+                            name: 'Malay',
+                            value: 'ms'
                         },
                         {
-                          name: 'Russian',
-                          value: 'ru'
+                            name: 'Russian',
+                            value: 'ru'
                         },
                         {
-                          name: 'Bengali',
-                          value: 'bn'
+                            name: 'Bengali',
+                            value: 'bn'
                         },
                         {
-                          name: 'Portuguese',
-                          value: 'pt'
+                            name: 'Portuguese',
+                            value: 'pt'
                         },
                         {
-                          name: 'French',
-                          value: 'fr'
+                            name: 'French',
+                            value: 'fr'
                         },
                         {
-                          name: 'Hausa',
-                          value: 'ha'
+                            name: 'Hausa',
+                            value: 'ha'
                         },
                         {
-                          name: 'Punjabi',
-                          value: 'pa'
+                            name: 'Punjabi',
+                            value: 'pa'
                         },
                         {
-                          name: 'German',
-                          value: 'de'
+                            name: 'German',
+                            value: 'de'
                         },
                         {
-                          name: 'Japanese',
-                          value: 'ja'
+                            name: 'Japanese',
+                            value: 'ja'
                         },
                         {
-                          name: 'Persian',
-                          value: 'fa'
+                            name: 'Persian',
+                            value: 'fa'
                         },
                         {
-                          name: 'Swahili',
-                          value: 'sw'
+                            name: 'Swahili',
+                            value: 'sw'
                         },
                         {
-                          name: 'Vietnamese',
-                          value: 'vi'
+                            name: 'Vietnamese',
+                            value: 'vi'
                         },
                         {
-                          name: 'Telugu',
-                          value: 'te'
+                            name: 'Telugu',
+                            value: 'te'
                         },
                         {
-                          name: 'Italian',
-                          value: 'it'
+                            name: 'Italian',
+                            value: 'it'
                         },
                         {
-                          name: 'Javanese',
-                          value: 'jw'
+                            name: 'Javanese',
+                            value: 'jw'
                         },
                         {
-                          name: 'Chinese Traditional',
-                          value: 'zh-tw'
+                            name: 'Chinese Traditional',
+                            value: 'zh-tw'
                         },
                         {
-                          name: 'Korean',
-                          value: 'ko'
+                            name: 'Korean',
+                            value: 'ko'
                         },
                         {
-                          name: 'Tamil',
-                          value: 'ta'
+                            name: 'Tamil',
+                            value: 'ta'
                         },
                         {
-                          name: 'Marathi',
-                          value: 'mr'
+                            name: 'Marathi',
+                            value: 'mr'
                         },
                         {
-                          name: 'Urdu',
-                          value: 'ur'
+                            name: 'Urdu',
+                            value: 'ur'
                         }
                     ]
                 }
@@ -243,37 +243,37 @@ export default class extends Command {
     }
 
     async execute(interaction: ICommandInteraction) {
+        const input = await interaction.options.getString('input')
+        const from = (await interaction.options.get('input_lang')?.value) || 'auto'
+        const to = (await interaction.options.get('output_lang')?.value) || 'en'
 
-        const input = await interaction.options.getString('input');
-        const from = await interaction.options.get('input_lang')?.value || 'auto';
-        const to = await interaction.options.get('output_lang')?.value || 'en';
-
-        translate(input, { from: from, to: to }).then((res: any)=> {
-
-            return interaction.reply({ embeds: [
-                new MessageEmbed()
-                 .setTitle('Translation Results')
-                 .setColor(this.bot.colors.red)
-                 .setThumbnail(this.bot.logo)
-                 .setDescription(`From: ${from} ➜ To: ${to}`)
-                 .addFields(
-                    {
-                        name: '📥 Input',
-                        value: `${input}`,
-                        inline: false
-                    },
-                    {
-                        name: '📤 Output',
-                        value: `${res.text}`,
-                        inline: false
-                    },
-                 )
-                 .setTimestamp()
-                 .setFooter({
-                    text: `${this.bot.credits}`,
-                    iconURL: `${this.bot.logo}`
-                 })
-            ]})
+        translate(input, { from: from, to: to }).then((res: any) => {
+            return interaction.reply({
+                embeds: [
+                    new MessageEmbed()
+                        .setTitle('Translation Results')
+                        .setColor(this.bot.colors.red)
+                        .setThumbnail(this.bot.logo)
+                        .setDescription(`From: ${from} ➜ To: ${to}`)
+                        .addFields(
+                            {
+                                name: '📥 Input',
+                                value: `${input}`,
+                                inline: false
+                            },
+                            {
+                                name: '📤 Output',
+                                value: `${res.text}`,
+                                inline: false
+                            }
+                        )
+                        .setTimestamp()
+                        .setFooter({
+                            text: `${this.bot.credits}`,
+                            iconURL: `${this.bot.logo}`
+                        })
+                ]
+            })
         })
     }
 }

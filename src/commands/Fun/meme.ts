@@ -132,7 +132,7 @@ export default class extends Command {
                     new MessageButton().setLabel('Generate Meme').setStyle('PRIMARY').setCustomId('generate-meme')
                 ])
             ],
-            fetchReply: true,
+            fetchReply: true
         })
 
         const collector = await interaction.channel!.createMessageComponentCollector({
@@ -241,35 +241,32 @@ export default class extends Command {
         })
 
         collector.on('end', async (collected, reason) => {
-
             if (reason === 'idle') {
-
                 interaction.editReply({
                     embeds: [
                         new MessageEmbed()
-                         .setTitle('ERROR: Interaction Timed Out')
-                         .setColor(this.bot.colors.red)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription('The interaction was idle for more then 30 seconds and will now be shut down.')
-                         .addFields(
-                            {
+                            .setTitle('ERROR: Interaction Timed Out')
+                            .setColor(this.bot.colors.red)
+                            .setThumbnail(this.bot.logo)
+                            .setDescription(
+                                'The interaction was idle for more then 30 seconds and will now be shut down.'
+                            )
+                            .addFields({
                                 name: 'Interaction Collector',
                                 value: `Collected: ${collected.size} items before close `
-                            }
-                        )
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
+                            })
+                            .setTimestamp()
+                            .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                            })
                     ],
                     components: []
                 })
 
                 setTimeout(async () => {
                     await interaction.deleteReply()
-                }, 5000);
-                
+                }, 5000)
             }
         })
     }
