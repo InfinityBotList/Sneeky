@@ -162,7 +162,7 @@ export default class extends Command {
                     : meme.data.children.filter((post: any) => !post.data.over_18)
 
                 if (!safeContent.length || !safeContent) {
-                    return i.editReply({
+                    return i.update({
                         embeds: [
                             new MessageEmbed()
                                 .setTitle('ERROR: Out of Memes')
@@ -180,7 +180,7 @@ export default class extends Command {
 
                 const randomMeme = Math.floor(Math.random() * safeContent.length)
 
-                return i.editReply({
+                return i.update({
                     embeds: [
                         new MessageEmbed()
                             .setTitle(`${safeContent[randomMeme].data.title}`)
@@ -213,7 +213,7 @@ export default class extends Command {
                     ]
                 })
             } else if (i.customId === 'close-memes') {
-                await i.editReply({
+                await i.update({
                     embeds: [
                         new MessageEmbed()
                             .setTitle('Closing Meme Generator')
