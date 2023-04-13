@@ -1,9 +1,6 @@
 import type Bot from '../handlers/client'
 import type { ICommandInteraction } from '../typings/types'
-import { REST } from '@discordjs/rest';
-import { proxyRequests } from '@discordjs/proxy'
 import { MessageEmbed } from 'discord.js'
-import { createServer } from 'node:http'
 
 const logger = require('migizi-logs')
 
@@ -15,10 +12,6 @@ export default class {
     }
 
     async run(interaction: ICommandInteraction) {
-        
-        const api = new REST({ api: '100.125.213.82:3219', rejectOnRateLimit: () => true, retries: 0}).setToken(config.TOKENS.DISCORD);
-        await createServer(proxyRequests(api))
-        
         if (!interaction.isCommand()) return
 
         let member = interaction.guild!.members.cache.get(interaction.user.id)
