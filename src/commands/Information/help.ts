@@ -106,6 +106,11 @@ export default class extends Command {
                                 label: 'NSFW Commands',
                                 value: 'nsfw',
                                 description: 'View all of the nsfw category commands'
+                            },
+                            {
+                                label: 'Utility Commands',
+                                value: 'utility',
+                                description: 'View all of the utility category commands'
                             }
                         ])
                 )
@@ -276,6 +281,29 @@ export default class extends Command {
                                     name: 'Available Commands',
                                     value: `${this.bot.commands
                                         .filter((cmd: any) => cmd.category === 'NSFW')
+                                        .map((cmd: any) => cmd.name)
+                                        .join(' , ')}`,
+                                    inline: false
+                                })
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+                } else if (interaction.values[0] === 'utility') {
+                    await interaction.update({
+                        embeds: [
+                            new MessageEmbed()
+                                .setTitle('Utility Commands')
+                                .setColor(this.bot.colors.embed)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription('You can use `/help <cmdName>` to view command related help')
+                                .addFields({
+                                    name: 'Available Commands',
+                                    value: `${this.bot.commands
+                                        .filter((cmd: any) => cmd.category === 'Utility')
                                         .map((cmd: any) => cmd.name)
                                         .join(' , ')}`,
                                     inline: false
