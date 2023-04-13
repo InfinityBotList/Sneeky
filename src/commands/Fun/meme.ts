@@ -144,7 +144,6 @@ export default class extends Command {
 
         collector.on('collect', async (i: any) => {
             if (i.customId === 'generate-meme') {
-
                 const meme = await fetch(`https://reddit.com/r/${category}${sort}&t=week${limit}`).then(r => r.json())
 
                 let nsfwCheck
@@ -214,7 +213,6 @@ export default class extends Command {
                     ]
                 })
             } else if (i.customId === 'close-memes') {
-
                 await i.editReply({
                     embeds: [
                         new MessageEmbed()
