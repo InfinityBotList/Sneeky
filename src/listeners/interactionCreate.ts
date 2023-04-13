@@ -73,45 +73,9 @@ export default class {
                         ]
                     })
             }
-        } /** LEAVE THIS DISABLED FOR NOW BUGGY
-        else if (!this.bot.admins.includes(interaction.user.id)) {
 
-            if (!this.bot.cooldowns.has(command.name)) {
+        } else {
 
-                this.bot.cooldowns.set(command.name, new Map());
-            };
-
-            const timeNow = Date.now();
-            const tStamps = this.bot.cooldowns.get(command.name);
-            const cdAmount = (command.cooldown | 5) * 1000;
-
-            if (tStamps.has(interaction.user.id)) {
-
-                const cdExpirationTime = tStamps.get(interaction.user.id) + cdAmount;
-
-                if (timeNow < cdExpirationTime) {
-                    
-                    const timeLeft = (cdExpirationTime - timeNow) / 1000;
-
-                     return interaction.reply({ embeds: [
-                        new MessageEmbed()
-                         .setTitle('ERROR: Command Rate limited')
-                         .setColor(this.bot.colors.red)
-                         .setThumbnail(this.bot.logo)
-                         .setDescription(`Please wait: ${timeLeft.toFixed(0)} Seconds before using the: ${command.name} command again!`)
-                         .setTimestamp()
-                         .setFooter({
-                            text: `${this.bot.credits}`,
-                            iconURL: `${this.bot.logo}`
-                         })
-                     ] });
-                }
-            }
-
-            tStamps.set(interaction.user.id, timeNow);
-            setTimeout(() => tStamps.delete(interaction.user.id, cdAmount));
-        
-        } */ else {
             interaction.subcommand = interaction.options.getSubcommand(false)
 
             let args: any = interaction.options

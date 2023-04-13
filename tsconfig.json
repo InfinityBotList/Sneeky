@@ -16,6 +16,7 @@
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
+		"resolveJsonModule": true,
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"noEmitOnError": true,

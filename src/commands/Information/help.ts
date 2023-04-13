@@ -129,8 +129,8 @@ export default class extends Command {
 
             const collector = interaction.channel!.createMessageComponentCollector({
                 componentType: 'SELECT_MENU',
-                idle: 300000,
-                dispose: true
+                dispose: true,
+                idle: 10000,
             })
 
             collector.on('collect', async interaction => {
@@ -290,17 +290,38 @@ export default class extends Command {
                 }
             })
 
-            collector.on('end', (reason: any) => {
-                if (reason === 'time') {
+            collector.on('end', async (collected, reason) => {
+
+                if (!interaction.isMessageComponent) return;
+    
+                if (reason === 'idle') {
+    
                     interaction.editReply({
-                        content: 'Collector timed out!',
-                        components: components(false)
+                        embeds: [
+                            new MessageEmbed()
+                             .setTitle('ERROR: Interaction Timed Out')
+                             .setColor(this.bot.colors.red)
+                             .setThumbnail(this.bot.logo)
+                             .setDescription('The interaction was idle for more then 10 seconds and will now be shut down.')
+                             .addFields(
+                                {
+                                    name: 'Interaction Collector',
+                                    value: `Collected: ${collected.size} items before close `
+                                }
+                            )
+                             .setTimestamp()
+                             .setFooter({
+                                text: `${this.bot.credits}`,
+                                iconURL: `${this.bot.logo}`
+                             })
+                        ],
+                        components: []
                     })
-                } else {
-                    interaction.editReply({
-                        content: 'Collector destroyed!',
-                        components: components(false)
-                    })
+    
+                    setTimeout(async () => {
+                        await interaction.deleteReply()
+                    }, 5000);
+                    
                 }
             })
         }
