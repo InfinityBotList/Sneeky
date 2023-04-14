@@ -1,7 +1,7 @@
 import Command from '../commandClass'
 import { MessageEmbed } from 'discord.js'
 import type { ICommandInteraction } from '../../typings/types'
-const { createProfile, findProfile } = require('../../structures/utils');
+const { createProfile, findProfile } = require('../../structures/utils')
 import { sneekyProfile } from '../../database/profile'
 
 export default class extends Command {
@@ -23,11 +23,11 @@ export default class extends Command {
                 },
                 {
                     name: 'view',
-                    description: 'View someone\'s economy profile',
+                    description: "View someone's economy profile",
                     options: [
                         {
                             name: 'user',
-                            description: 'The user who\'s profile you want to fetch',
+                            description: "The user who's profile you want to fetch",
                             required: true,
                             type: 'USER'
                         }
@@ -61,9 +61,7 @@ export default class extends Command {
                                 })
                         ]
                     })
-
                 else {
-
                     await createProfile(interaction.user, interaction.guild!)
 
                     return interaction.reply({
@@ -82,36 +80,37 @@ export default class extends Command {
                     })
                 }
 
-                case 'view':
-                    let user = await interaction.options.getUser('user') || interaction.user;
-                    let dbProfile = await findProfile(user, interaction.guild!);
-                    
-                    if (!dbProfile) return interaction.reply({
-                        embeds: [
-                            new MessageEmbed()
-                             .setTitle('ERROR: Profile not found!')
-                             .setColor(this.bot.colors.red)
-                             .setThumbnail(this.bot.logo)
-                             .setDescription(`Hold up chief: ${user.username} has no economy profile`)
-                             .addFields({
-                                name: 'Next Steps',
-                                value: 'They can create a profile using the `/profile create` command'
-                             })
-                             .setTimestamp()
-                             .setFooter({
-                                text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                             })
-                        ]
-                    })
+            case 'view':
+                let user = (await interaction.options.getUser('user')) || interaction.user
+                let dbProfile = await findProfile(user, interaction.guild!)
 
+                if (!dbProfile)
                     return interaction.reply({
                         embeds: [
                             new MessageEmbed()
-                             .setTitle(`${user.username}\'s Profile`)
-                             .setColor(this.bot.colors.embed)
-                             .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-                             .addFields(
+                                .setTitle('ERROR: Profile not found!')
+                                .setColor(this.bot.colors.red)
+                                .setThumbnail(this.bot.logo)
+                                .setDescription(`Hold up chief: ${user.username} has no economy profile`)
+                                .addFields({
+                                    name: 'Next Steps',
+                                    value: 'They can create a profile using the `/profile create` command'
+                                })
+                                .setTimestamp()
+                                .setFooter({
+                                    text: `${this.bot.credits}`,
+                                    iconURL: `${this.bot.logo}`
+                                })
+                        ]
+                    })
+
+                return interaction.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle(`${user.username}\'s Profile`)
+                            .setColor(this.bot.colors.embed)
+                            .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+                            .addFields(
                                 {
                                     name: 'Wallet',
                                     value: `${dbProfile.wallet}`,
@@ -122,14 +121,14 @@ export default class extends Command {
                                     value: `${dbProfile.bank}`,
                                     inline: true
                                 }
-                             )
-                             .setTimestamp()
-                             .setFooter({
+                            )
+                            .setTimestamp()
+                            .setFooter({
                                 text: `${this.bot.credits}`,
                                 iconURL: `${this.bot.logo}`
-                             })
-                        ]
-                    })
+                            })
+                    ]
+                })
         }
     }
 }

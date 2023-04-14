@@ -1,7 +1,7 @@
 import Command from '../commandClass'
 import type { ICommandInteraction } from '../../typings/types'
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js'
-const { findProfile } = require('../../structures/utils');
+const { findProfile } = require('../../structures/utils')
 const { shuffleArray } = require('../../structures/utils')
 import { sneekyProfile } from '../../database/profile'
 const { decode } = require('html-entities')
@@ -158,8 +158,8 @@ export default class extends Command {
 
     async execute(interaction: ICommandInteraction) {
         var category
-        var difficulty: any;
-        var earnings: any;
+        var difficulty: any
+        var earnings: any
         const profile = await findProfile(interaction.user, interaction.guild!)
 
         if (!interaction.options.get('category') || interaction.options.get('category')?.value === 'any') {
@@ -230,12 +230,11 @@ export default class extends Command {
                 })
 
             if (i.customId === quiz.correct_answer) {
-
                 if (profile) {
-                    if (difficulty === 'any') earnings = 10;
-                    else if (difficulty === '&difficulty=easy') earnings = 25;
-                    else if (difficulty === '&difficulty=medium') earnings = 50;
-                    else if (difficulty === '&difficulty=hard') earnings = 100;
+                    if (difficulty === 'any') earnings = 10
+                    else if (difficulty === '&difficulty=easy') earnings = 25
+                    else if (difficulty === '&difficulty=medium') earnings = 50
+                    else if (difficulty === '&difficulty=hard') earnings = 100
 
                     await sneekyProfile.updateOne(
                         {
@@ -270,7 +269,7 @@ export default class extends Command {
                                 },
                                 {
                                     name: 'Earnings',
-                                    value: `${ profile ? "$" + earnings : 'Create a profile to earn rewards' }`
+                                    value: `${profile ? '$' + earnings : 'Create a profile to earn rewards'}`
                                 }
                             )
                             .setTimestamp()

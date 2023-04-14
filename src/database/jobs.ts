@@ -3,10 +3,10 @@ import mongoose, { Schema, Document, model } from 'mongoose'
 mongoose.set('strictQuery', false)
 
 interface UserJobs extends Document {
-    title: String,
-    company: String,
-    userId: String,
-    guildId: String,
+    title: String
+    company: String
+    userId: String
+    guildId: String
 }
 
 const UserJobs: Schema = new Schema<UserJobs>({
@@ -25,7 +25,7 @@ const UserJobs: Schema = new Schema<UserJobs>({
     userId: {
         type: String,
         required: true
-    },
+    }
 })
 
 const sneekyJobs = mongoose.models.sneekyJobs || model('sneekyJobs', UserJobs)
