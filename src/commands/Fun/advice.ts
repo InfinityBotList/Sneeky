@@ -46,15 +46,11 @@ export default class extends Command {
 
         const collector = await interaction.channel!.createMessageComponentCollector({
             filter: (fn: any) => fn,
-            componentType: 'BUTTON',
-            dispose: true,
-            idle: 30000
+            componentType: 'BUTTON'
         })
 
         collector.on('collect', async (i: any) => {
             if (i.customId === 'generate-advice') {
-                await i.deferUpdate()
-
                 const data2 = await fetch('https://api.adviceslip.com/advice').then(res => res.json())
 
                 return i.editReply({
@@ -72,8 +68,6 @@ export default class extends Command {
                     ]
                 })
             } else if (i.customId === 'close-advice') {
-                await i.deferReply()
-
                 await i.editReply({
                     embeds: [
                         new MessageEmbed()
@@ -94,38 +88,6 @@ export default class extends Command {
                 }, 3000)
 
                 return interaction.deleteReply()
-            }
-        })
-
-        collector.on('end', async (collected, reason) => {
-            if (!interaction.isMessageComponent) return
-
-            if (reason === 'idle') {
-                interaction.editReply({
-                    embeds: [
-                        new MessageEmbed()
-                            .setTitle('ERROR: Interaction Timed Out')
-                            .setColor(this.bot.colors.red)
-                            .setThumbnail(this.bot.logo)
-                            .setDescription(
-                                'The interaction was idle for more then 30 seconds and will now be shut down.'
-                            )
-                            .addFields({
-                                name: 'Interaction Collector',
-                                value: `Collected: ${collected.size} items before close `
-                            })
-                            .setTimestamp()
-                            .setFooter({
-                                text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
-                    ],
-                    components: []
-                })
-
-                setTimeout(async () => {
-                    await interaction.deleteReply()
-                }, 5000)
             }
         })
     }

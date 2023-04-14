@@ -1,9 +1,11 @@
 import Command from '../commandClass'
 import type { ICommandInteraction } from '../../typings/types'
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js'
-import fetch from 'node-fetch'
+const { findProfile } = require('../../structures/utils');
 const { shuffleArray } = require('../../structures/utils')
+import { sneekyProfile } from '../../database/profile'
 const { decode } = require('html-entities')
+import fetch from 'node-fetch'
 
 export default class extends Command {
     constructor(bot: any) {
@@ -156,7 +158,9 @@ export default class extends Command {
 
     async execute(interaction: ICommandInteraction) {
         var category
-        var difficulty
+        var difficulty: any;
+        var earnings: any;
+        const profile = await findProfile(interaction.user, interaction.guild!)
 
         if (!interaction.options.get('category') || interaction.options.get('category')?.value === 'any') {
             category = ''
@@ -226,6 +230,24 @@ export default class extends Command {
                 })
 
             if (i.customId === quiz.correct_answer) {
+
+                if (profile) {
+                    if (difficulty === 'any') earnings = 10;
+                    else if (difficulty === '&difficulty=easy') earnings = 25;
+                    else if (difficulty === '&difficulty=medium') earnings = 50;
+                    else if (difficulty === '&difficulty=hard') earnings = 100;
+
+                    await sneekyProfile.updateOne(
+                        {
+                            userId: interaction.user.id,
+                            guildId: interaction.guild!.id
+                        },
+                        {
+                            $inc: { wallet: earnings }
+                        }
+                    )
+                }
+
                 await i.deferUpdate()
 
                 i.editReply({
@@ -245,6 +267,10 @@ export default class extends Command {
                                     name: 'Quiz Results',
                                     value: 'You answered correctly! GG',
                                     inline: false
+                                },
+                                {
+                                    name: 'Earnings',
+                                    value: `${ profile ? "$" + earnings : 'Create a profile to earn rewards' }`
                                 }
                             )
                             .setTimestamp()

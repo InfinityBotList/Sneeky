@@ -192,7 +192,10 @@ class Bot {
     }
 
     public log(options: IWebhookSend) {
-        const webhook = new WebhookClient({ url: this.config.CHANNELS.LOGS })
+        
+        const webhook = new WebhookClient({ 
+            url: this.config.CHANNELS.LOGS 
+        });
 
         webhook.send(options)
     }
