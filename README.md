@@ -1,4 +1,7 @@
 # Sneeky
+
+[![Prettier](https://github.com/InfinityBotList/Sneeky/actions/workflows/prettier.yml/badge.svg?branch=master)](https://github.com/InfinityBotList/Sneeky/actions/workflows/prettier.yml)
+
 Just a basic Discord.js Typescript Bot
 
 > Used as the default test bot for Infinity Bot List Onboarding
