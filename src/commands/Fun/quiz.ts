@@ -1,187 +1,195 @@
-import Command from '../commandClass'
-import type { ICommandInteraction } from '../../typings/types'
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js'
-const { findProfile } = require('../../structures/utils')
-const { shuffleArray } = require('../../structures/utils')
-import { sneekyProfile } from '../../database/profile'
-const { decode } = require('html-entities')
-import fetch from 'node-fetch'
+import Command from "../commandClass";
+import type { ICommandInteraction } from "../../typings/types";
+import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+const { findProfile } = require("../../structures/utils");
+const { shuffleArray } = require("../../structures/utils");
+import { sneekyProfile } from "../../database/profile";
+const { decode } = require("html-entities");
+import fetch from "node-fetch";
 
 export default class extends Command {
     constructor(bot: any) {
         super(bot, {
-            name: 'quiz',
-            usage: '/quiz <opts>',
+            name: "quiz",
+            usage: "/quiz <opts>",
             aliases: [],
             options: [
                 {
-                    name: 'category',
-                    type: 'STRING',
-                    description: 'Question Category.',
+                    name: "category",
+                    type: "STRING",
+                    description: "Question Category.",
                     required: false,
                     choices: [
                         {
-                            name: 'Any Category',
-                            value: 'any'
+                            name: "Any Category",
+                            value: "any",
                         },
                         {
-                            name: 'General Knowledge',
-                            value: '&category=9'
+                            name: "General Knowledge",
+                            value: "&category=9",
                         },
                         {
-                            name: 'Entertainment: Books',
-                            value: '&category=10'
+                            name: "Entertainment: Books",
+                            value: "&category=10",
                         },
                         {
-                            name: 'Entertainment: Films',
-                            value: '&category=11'
+                            name: "Entertainment: Films",
+                            value: "&category=11",
                         },
                         {
-                            name: 'Entertainment: Music',
-                            value: '&category=12'
+                            name: "Entertainment: Music",
+                            value: "&category=12",
                         },
                         {
-                            name: 'Entertainment: Musicals & Theaters',
-                            value: '&category=13'
+                            name: "Entertainment: Musicals & Theaters",
+                            value: "&category=13",
                         },
                         {
-                            name: 'Entertainment: Television',
-                            value: '&category=14'
+                            name: "Entertainment: Television",
+                            value: "&category=14",
                         },
                         {
-                            name: 'Entertainment: Video Games',
-                            value: '&category=15'
+                            name: "Entertainment: Video Games",
+                            value: "&category=15",
                         },
                         {
-                            name: 'Entertainment: Board Games',
-                            value: '&category=16'
+                            name: "Entertainment: Board Games",
+                            value: "&category=16",
                         },
                         {
-                            name: 'Entertainment: Comics',
-                            value: '&category=17'
+                            name: "Entertainment: Comics",
+                            value: "&category=17",
                         },
                         {
-                            name: 'Entertainment: Japanese Anime & Manga',
-                            value: '&category=18'
+                            name: "Entertainment: Japanese Anime & Manga",
+                            value: "&category=18",
                         },
                         {
-                            name: 'Entertainment: Cartoon & Animations',
-                            value: '&category=19'
+                            name: "Entertainment: Cartoon & Animations",
+                            value: "&category=19",
                         },
                         {
-                            name: 'Science & Nature',
-                            value: '&category=20'
+                            name: "Science & Nature",
+                            value: "&category=20",
                         },
                         {
-                            name: 'Science: Computers',
-                            value: '&category=21'
+                            name: "Science: Computers",
+                            value: "&category=21",
                         },
                         {
-                            name: 'Science: Mathematics',
-                            value: '&category=22'
+                            name: "Science: Mathematics",
+                            value: "&category=22",
                         },
                         {
-                            name: 'Science: Gadgets',
-                            value: '&category=23'
+                            name: "Science: Gadgets",
+                            value: "&category=23",
                         },
                         {
-                            name: 'Mythology',
-                            value: '&category=24'
+                            name: "Mythology",
+                            value: "&category=24",
                         },
                         {
-                            name: 'Sports',
-                            value: '&category=25'
+                            name: "Sports",
+                            value: "&category=25",
                         },
                         {
-                            name: 'Geography',
-                            value: '&category=26'
+                            name: "Geography",
+                            value: "&category=26",
                         },
                         {
-                            name: 'History',
-                            value: '&category=27'
+                            name: "History",
+                            value: "&category=27",
                         },
                         {
-                            name: 'Politics',
-                            value: '&category=28'
+                            name: "Politics",
+                            value: "&category=28",
                         },
                         {
-                            name: 'Art',
-                            value: '&category=29'
+                            name: "Art",
+                            value: "&category=29",
                         },
                         {
-                            name: 'Celebrities',
-                            value: '&category=30'
+                            name: "Celebrities",
+                            value: "&category=30",
                         },
                         {
-                            name: 'Animals',
-                            value: '&category=31'
+                            name: "Animals",
+                            value: "&category=31",
                         },
                         {
-                            name: 'Vehicles',
-                            value: '&category=32'
-                        }
-                    ]
+                            name: "Vehicles",
+                            value: "&category=32",
+                        },
+                    ],
                 },
                 {
-                    name: 'difficulty',
-                    type: 'STRING',
-                    description: 'Question Difficulty.',
+                    name: "difficulty",
+                    type: "STRING",
+                    description: "Question Difficulty.",
                     required: false,
                     choices: [
                         {
-                            name: 'Any Difficulty',
-                            value: 'any'
+                            name: "Any Difficulty",
+                            value: "any",
                         },
                         {
-                            name: 'Easy',
-                            value: '&difficulty=easy'
+                            name: "Easy",
+                            value: "&difficulty=easy",
                         },
                         {
-                            name: 'Medium',
-                            value: '&difficulty=medium'
+                            name: "Medium",
+                            value: "&difficulty=medium",
                         },
                         {
-                            name: 'Hard',
-                            value: '&difficulty=hard'
-                        }
-                    ]
-                }
+                            name: "Hard",
+                            value: "&difficulty=hard",
+                        },
+                    ],
+                },
             ],
-            description: 'Quiz time.',
-            category: 'Fun',
+            description: "Quiz time.",
+            category: "Fun",
             cooldown: 5,
             userPermissions: [],
             botPermissions: [],
-            subCommands: []
-        })
+            subCommands: [],
+        });
     }
 
     async execute(interaction: ICommandInteraction) {
-        var category
-        var difficulty: any
-        var earnings: any
-        const profile = await findProfile(interaction.user, interaction.guild!)
+        var category;
+        var difficulty: any;
+        var earnings: any;
+        const profile = await findProfile(interaction.user, interaction.guild!);
 
-        if (!interaction.options.get('category') || interaction.options.get('category')?.value === 'any') {
-            category = ''
+        if (
+            !interaction.options.get("category") ||
+            interaction.options.get("category")?.value === "any"
+        ) {
+            category = "";
         } else {
-            category = interaction.options.get('category')?.value
+            category = interaction.options.get("category")?.value;
         }
 
-        if (!interaction.options.get('difficulty') || interaction.options.get('difficulty')?.value === 'any') {
-            difficulty = ''
+        if (
+            !interaction.options.get("difficulty") ||
+            interaction.options.get("difficulty")?.value === "any"
+        ) {
+            difficulty = "";
         } else {
-            difficulty = interaction.options.get('difficulty')?.value
+            difficulty = interaction.options.get("difficulty")?.value;
         }
 
-        const quizes: any = await fetch(`https://opentdb.com/api.php?amount=1&type=multiple${category}${difficulty}`)
-        const result = await quizes.json()
-        const quiz = result.results[0]
-        const question = decode(quiz.question)
-        quiz.incorrect_answers.push(quiz.correct_answer)
-        shuffleArray(quiz.incorrect_answers)
+        const quizes: any = await fetch(
+            `https://opentdb.com/api.php?amount=1&type=multiple${category}${difficulty}`
+        );
+        const result = await quizes.json();
+        const quiz = result.results[0];
+        const question = decode(quiz.question);
+        quiz.incorrect_answers.push(quiz.correct_answer);
+        shuffleArray(quiz.incorrect_answers);
 
-        console.log(quiz.correct_answer)
+        console.log(quiz.correct_answer);
 
         await interaction.reply({
             embeds: [
@@ -191,63 +199,76 @@ export default class extends Command {
                     .setThumbnail(this.bot.logo)
                     .setDescription(question)
                     .addFields({
-                        name: 'Choices',
+                        name: "Choices",
                         value: `A. ${decode(quiz.incorrect_answers[0])}\n
                         B. ${decode(quiz.incorrect_answers[1])}\n
                         C. ${decode(quiz.incorrect_answers[2])}\n
                         D. ${decode(quiz.incorrect_answers[3])}`,
-                        inline: false
+                        inline: false,
                     })
                     .setTimestamp()
                     .setFooter({
                         text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                    })
+                        iconURL: `${this.bot.logo}`,
+                    }),
             ],
             components: [
                 new MessageActionRow().addComponents([
-                    new MessageButton().setCustomId(quiz.incorrect_answers[0]).setLabel('A').setStyle('SUCCESS'),
-                    new MessageButton().setCustomId(quiz.incorrect_answers[1]).setLabel('B').setStyle('SUCCESS'),
-                    new MessageButton().setCustomId(quiz.incorrect_answers[2]).setLabel('C').setStyle('SUCCESS'),
-                    new MessageButton().setCustomId(quiz.incorrect_answers[3]).setLabel('D').setStyle('SUCCESS')
-                ])
+                    new MessageButton()
+                        .setCustomId(quiz.incorrect_answers[0])
+                        .setLabel("A")
+                        .setStyle("SUCCESS"),
+                    new MessageButton()
+                        .setCustomId(quiz.incorrect_answers[1])
+                        .setLabel("B")
+                        .setStyle("SUCCESS"),
+                    new MessageButton()
+                        .setCustomId(quiz.incorrect_answers[2])
+                        .setLabel("C")
+                        .setStyle("SUCCESS"),
+                    new MessageButton()
+                        .setCustomId(quiz.incorrect_answers[3])
+                        .setLabel("D")
+                        .setStyle("SUCCESS"),
+                ]),
             ],
-            fetchReply: true
-        })
+            fetchReply: true,
+        });
 
-        const collector = await interaction.channel!.createMessageComponentCollector({
-            filter: (fn: any) => fn,
-            componentType: 'BUTTON',
-            dispose: true,
-            idle: 30000
-        })
+        const collector =
+            await interaction.channel!.createMessageComponentCollector({
+                filter: (fn: any) => fn,
+                componentType: "BUTTON",
+                dispose: true,
+                idle: 30000,
+            });
 
-        collector.on('collect', async i => {
+        collector.on("collect", async (i) => {
             if (i.user.id !== interaction.user.id)
                 return interaction.reply({
-                    content: 'These buttons are not for you chief!',
-                    ephemeral: true
-                })
+                    content: "These buttons are not for you chief!",
+                    ephemeral: true,
+                });
 
             if (i.customId === quiz.correct_answer) {
                 if (profile) {
-                    if (difficulty === 'any') earnings = 10
-                    else if (difficulty === '&difficulty=easy') earnings = 25
-                    else if (difficulty === '&difficulty=medium') earnings = 50
-                    else if (difficulty === '&difficulty=hard') earnings = 100
+                    if (difficulty === "any") earnings = 10;
+                    else if (difficulty === "&difficulty=easy") earnings = 25;
+                    else if (difficulty === "&difficulty=medium") earnings = 50;
+                    else if (difficulty === "&difficulty=hard") earnings = 100;
 
                     await sneekyProfile.updateOne(
                         {
                             userId: interaction.user.id,
-                            guildId: interaction.guild!.id
+                            guildId: interaction.guild!.id,
                         },
                         {
-                            $inc: { wallet: earnings }
+                            $inc: { wallet: earnings },
                         }
-                    )
+                    );
                 }
 
-                await i.deferUpdate()
+                await i.deferUpdate();
 
                 i.editReply({
                     embeds: [
@@ -255,33 +276,37 @@ export default class extends Command {
                             .setTitle(`${quiz.category}`)
                             .setColor(this.bot.colors.embed)
                             .setThumbnail(this.bot.logo)
-                            .setDescription('Here are your results chief!')
+                            .setDescription("Here are your results chief!")
                             .addFields(
                                 {
                                     name: `Question`,
                                     value: `${question}`,
-                                    inline: false
+                                    inline: false,
                                 },
                                 {
-                                    name: 'Quiz Results',
-                                    value: 'You answered correctly! GG',
-                                    inline: false
+                                    name: "Quiz Results",
+                                    value: "You answered correctly! GG",
+                                    inline: false,
                                 },
                                 {
-                                    name: 'Earnings',
-                                    value: `${profile ? '$' + earnings : 'Create a profile to earn rewards'}`
+                                    name: "Earnings",
+                                    value: `${
+                                        profile
+                                            ? "$" + earnings
+                                            : "Create a profile to earn rewards"
+                                    }`,
                                 }
                             )
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
+                                iconURL: `${this.bot.logo}`,
+                            }),
                     ],
-                    components: []
-                })
+                    components: [],
+                });
             } else {
-                await i.deferUpdate()
+                await i.deferUpdate();
 
                 i.editReply({
                     embeds: [
@@ -289,60 +314,60 @@ export default class extends Command {
                             .setTitle(`${quiz.category}`)
                             .setColor(this.bot.colors.embed)
                             .setThumbnail(this.bot.logo)
-                            .setDescription('Here are your results chief!')
+                            .setDescription("Here are your results chief!")
                             .addFields(
                                 {
                                     name: `Question`,
                                     value: `${question}`,
-                                    inline: false
+                                    inline: false,
                                 },
                                 {
-                                    name: 'Quiz Results',
-                                    value: 'You answered incorrectly! Better luck next time',
-                                    inline: false
+                                    name: "Quiz Results",
+                                    value: "You answered incorrectly! Better luck next time",
+                                    inline: false,
                                 }
                             )
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
+                                iconURL: `${this.bot.logo}`,
+                            }),
                     ],
-                    components: []
-                })
+                    components: [],
+                });
             }
-        })
+        });
 
-        collector.on('end', async (collected, reason) => {
-            if (!interaction.isMessageComponent) return
+        collector.on("end", async (collected, reason) => {
+            if (!interaction.isMessageComponent) return;
 
-            if (reason === 'idle') {
+            if (reason === "idle") {
                 interaction.editReply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle('ERROR: Interaction Timed Out')
+                            .setTitle("ERROR: Interaction Timed Out")
                             .setColor(this.bot.colors.red)
                             .setThumbnail(this.bot.logo)
                             .setDescription(
-                                'The interaction was idle for more then 30 seconds and will now be shut down.'
+                                "The interaction was idle for more then 30 seconds and will now be shut down."
                             )
                             .addFields({
-                                name: 'Interaction Collector',
-                                value: `Collected: ${collected.size} items before close `
+                                name: "Interaction Collector",
+                                value: `Collected: ${collected.size} items before close `,
                             })
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
+                                iconURL: `${this.bot.logo}`,
+                            }),
                     ],
-                    components: []
-                })
+                    components: [],
+                });
 
                 setTimeout(async () => {
-                    await interaction.deleteReply()
-                }, 5000)
+                    await interaction.deleteReply();
+                }, 5000);
             }
-        })
+        });
     }
 }

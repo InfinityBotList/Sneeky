@@ -1,54 +1,58 @@
-import Command from '../commandClass'
-import type { ICommandInteraction } from '../../typings/types'
-import { MessageEmbed } from 'discord.js'
+import Command from "../commandClass";
+import type { ICommandInteraction } from "../../typings/types";
+import { MessageEmbed } from "discord.js";
 
 export default class extends Command {
     constructor(bot: any) {
         super(bot, {
-            name: 'ping',
-            usage: '/ping',
+            name: "ping",
+            usage: "/ping",
             aliases: [],
             options: [],
-            description: 'Get the bots latency and ping',
-            category: 'Information',
+            description: "Get the bots latency and ping",
+            category: "Information",
             cooldown: 5,
             userPermissions: [],
             botPermissions: [],
-            subCommands: []
-        })
+            subCommands: [],
+        });
     }
 
     async execute(interaction: ICommandInteraction) {
-        const debut = Date.now()
-        const msgInteraction = await interaction.channel!.send('Pinging please wait...')
+        const debut = Date.now();
+        const msgInteraction = await interaction.channel!.send(
+            "Pinging please wait..."
+        );
 
-        await msgInteraction.delete()
+        await msgInteraction.delete();
 
         return interaction.reply({
             embeds: [
                 new MessageEmbed()
-                    .setTitle('Check it out!')
+                    .setTitle("Check it out!")
                     .setColor(this.bot.colors.embed)
                     .setThumbnail(this.bot.logo)
-                    .setDescription('Client Latency and Interaction Response Time')
+                    .setDescription(
+                        "Client Latency and Interaction Response Time"
+                    )
                     .addFields(
                         {
-                            name: 'Client Latency',
+                            name: "Client Latency",
                             value: `\`${this.bot.client.ws.ping}\`ms`,
-                            inline: false
+                            inline: false,
                         },
                         {
-                            name: 'Response Time',
+                            name: "Response Time",
                             value: `\`${Date.now() - debut}\`ms`,
-                            inline: false
+                            inline: false,
                         }
                     )
                     .setTimestamp()
                     .setFooter({
                         text: `${this.bot.credits}`,
-                        iconURL: `${this.bot.logo}`
-                    })
-            ]
-        })
+                        iconURL: `${this.bot.logo}`,
+                    }),
+            ],
+        });
     }
 }

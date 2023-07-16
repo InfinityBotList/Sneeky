@@ -1,53 +1,54 @@
-import mongoose, { Schema, Document, model } from 'mongoose'
+import mongoose, { Schema, Document, model } from "mongoose";
 
-mongoose.set('strictQuery', false)
+mongoose.set("strictQuery", false);
 
 interface Reports extends Document {
-    type: string
-    title: string
-    repID: string
-    userID: string
-    userName: string
-    message: string
-    active: boolean
-    implemented: boolean
+    type: string;
+    title: string;
+    repID: string;
+    userID: string;
+    userName: string;
+    message: string;
+    active: boolean;
+    implemented: boolean;
 }
 
 const Reports: Schema = new Schema<Reports>({
     type: {
         type: String,
-        required: true
+        required: true,
     },
     title: {
         type: String,
-        required: true
+        required: true,
     },
     repID: {
         type: String,
-        required: true
+        required: true,
     },
     userID: {
         type: String,
-        required: true
+        required: true,
     },
     userName: {
         type: String,
-        required: true
+        required: true,
     },
     message: {
         type: String,
-        required: true
+        required: true,
     },
     active: {
         type: Boolean,
-        default: true
+        default: true,
     },
     implemented: {
         type: Boolean,
-        default: false
-    }
-})
+        default: false,
+    },
+});
 
-const sneekyReports = mongoose.models.sneekyReports || model('sneekyReports', Reports)
+const sneekyReports =
+    mongoose.models.sneekyReports || model("sneekyReports", Reports);
 
-export { sneekyReports, Reports }
+export { sneekyReports, Reports };

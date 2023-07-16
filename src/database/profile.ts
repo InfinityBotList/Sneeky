@@ -1,48 +1,49 @@
-import mongoose, { Schema, Document, model } from 'mongoose'
+import mongoose, { Schema, Document, model } from "mongoose";
 
-mongoose.set('strictQuery', false)
+mongoose.set("strictQuery", false);
 
 interface Profile extends Document {
-    guildId: String
-    userId: String
-    wallet: Number
-    bank: Number
-    lastDaily: Date
-    lastWeekly: Date
-    lastMonthly: Date
+    guildId: String;
+    userId: String;
+    wallet: Number;
+    bank: Number;
+    lastDaily: Date;
+    lastWeekly: Date;
+    lastMonthly: Date;
 }
 
 const Profile: Schema = new Schema<Profile>({
     guildId: {
         type: String,
-        required: true
+        required: true,
     },
     userId: {
         type: String,
-        required: true
+        required: true,
     },
     wallet: {
         type: Number,
-        required: true
+        required: true,
     },
     bank: {
         type: Number,
-        required: true
+        required: true,
     },
     lastDaily: {
         type: Date,
-        required: false
+        required: false,
     },
     lastWeekly: {
         type: Date,
-        required: false
+        required: false,
     },
     lastMonthly: {
         type: Date,
-        required: false
-    }
-})
+        required: false,
+    },
+});
 
-const sneekyProfile = mongoose.models.sneekyProfile || model('sneekyProfile', Profile)
+const sneekyProfile =
+    mongoose.models.sneekyProfile || model("sneekyProfile", Profile);
 
-export { sneekyProfile, Profile }
+export { sneekyProfile, Profile };

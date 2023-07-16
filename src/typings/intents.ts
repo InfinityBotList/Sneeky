@@ -1,9 +1,9 @@
-import { Intents } from 'discord.js'
+import { Intents } from "discord.js";
 
 const IClientInteractions = {
     AutoMod: {
         Config: Intents.FLAGS.AUTO_MODERATION_CONFIGURATION,
-        Execute: Intents.FLAGS.AUTO_MODERATION_EXECUTION
+        Execute: Intents.FLAGS.AUTO_MODERATION_EXECUTION,
     },
     Guilds: {
         BaseIntent: Intents.FLAGS.GUILDS,
@@ -16,11 +16,11 @@ const IClientInteractions = {
         GuildMsgReact: Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         GuildMsgTyping: Intents.FLAGS.GUILD_MESSAGE_TYPING,
         GuildPresences: Intents.FLAGS.GUILD_PRESENCES,
-        GuildWebhooks: Intents.FLAGS.GUILD_WEBHOOKS
+        GuildWebhooks: Intents.FLAGS.GUILD_WEBHOOKS,
     },
     Messages: {
-        MsgContent: Intents.FLAGS.MESSAGE_CONTENT
-    }
-}
+        MsgContent: Intents.FLAGS.MESSAGE_CONTENT,
+    },
+};
 
-export default IClientInteractions
+export default IClientInteractions;

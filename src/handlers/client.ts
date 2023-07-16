@@ -1,40 +1,40 @@
-import { IConfig, IColors, IWebhookSend } from '../typings/types'
-import { Client, WebhookClient, CommandInteraction, MessageEmbed, Collection } from 'discord.js'
-import IClientIntents from '../typings/intents'
-import { DiscordResolve } from 'discord-resolve'
-import config from '../configuration/bot.config'
-const logger = require('migizi-logs')
-import { readdirSync } from 'fs'
-import { join } from 'path'
+import { IConfig, IColors, IWebhookSend } from "../typings/types";
+import { Client, WebhookClient, CommandInteraction, MessageEmbed, Collection } from "discord.js";
+import IClientIntents from "../typings/intents";
+import { DiscordResolve } from "discord-resolve";
+import config from "../configuration/bot.config";
+const logger = require("migizi-logs");
+import { readdirSync } from "fs";
+import { join } from "path";
 
-declare module 'discord.js' {
+declare module "discord.js" {
     interface CommandInteraction {
-        replySuccessMessage(content: string): any
-        replyErrorMessage(content: string): any
+        replySuccessMessage(content: string): any;
+        replyErrorMessage(content: string): any;
     }
 }
 
 CommandInteraction.prototype.replySuccessMessage = function (content: string) {
-    return this.reply(content)
-}
+    return this.reply(content);
+};
 
 CommandInteraction.prototype.replyErrorMessage = function (content: string) {
-    return this.reply(content)
-}
+    return this.reply(content);
+};
 
 class Bot {
-    public client: Client
-    public admins: string[]
-    public logo: string
-    public credits: string
-    public errHook: WebhookClient
-    public commands: any
-    public cooldowns: Map<string, any>
-    protected config: IConfig
-    protected token: string
-    public models: any
-    public util: DiscordResolve
-    public colors: IColors
+    public client: Client;
+    public admins: string[];
+    public logo: string;
+    public credits: string;
+    public errHook: WebhookClient;
+    public commands: any;
+    public cooldowns: Map<string, any>;
+    protected config: IConfig;
+    protected token: string;
+    public models: any;
+    public util: DiscordResolve;
+    public colors: IColors;
 
     constructor() {
         this.client = new Client({
@@ -52,153 +52,163 @@ class Bot {
                 IClientIntents.Guilds.GuildMsgTyping,
                 IClientIntents.Guilds.GuildPresences,
                 IClientIntents.Guilds.GuildWebhooks,
-                IClientIntents.Messages.MsgContent
+                IClientIntents.Messages.MsgContent,
             ],
-            partials: ['CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION', 'USER']
-        })
+            partials: [
+                "CHANNEL",
+                "GUILD_MEMBER",
+                "MESSAGE",
+                "REACTION",
+                "USER",
+            ],
+        });
 
-        this.util = new DiscordResolve(this.client)
-        this.errHook = new WebhookClient({ url: config.CHANNELS.LOGS })
-        this.colors = config.COLORS as IColors
-        this.token = config.TOKENS.DISCORD
-        this.credits = config.CREDITS
-        this.admins = config.ADMINS
-        this.logo = config.LOGO
-        this.commands = new Collection()
-        this.cooldowns = new Map()
-        this.config = config
+        this.util = new DiscordResolve(this.client);
+        this.errHook = new WebhookClient({ url: config.CHANNELS.LOGS });
+        this.colors = config.COLORS as IColors;
+        this.token = config.TOKENS.DISCORD;
+        this.credits = config.CREDITS;
+        this.admins = config.ADMINS;
+        this.logo = config.LOGO;
+        this.commands = new Collection();
+        this.cooldowns = new Map();
+        this.config = config;
 
-        this.loadCommands()
-        this.loadEvents()
-        this.handleErrs()
+        this.loadCommands();
+        this.loadEvents();
+        this.handleErrs();
 
-        this.client.login(this.config.TOKENS.DISCORD)
+        this.client.login(this.config.TOKENS.DISCORD);
     }
 
-    private async loadCommands(dir = join(__dirname, '../commands')) {
+    private async loadCommands(dir = join(__dirname, "../commands")) {
         readdirSync(dir)
-            .filter(f => !f.endsWith('.js'))
-            .forEach(async dirs => {
-                const commands = readdirSync(`${dir}/${dirs}/`).filter(files => files.endsWith('.js'))
+            .filter((f) => !f.endsWith(".js"))
+            .forEach(async (dirs) => {
+                const commands = readdirSync(`${dir}/${dirs}/`).filter(
+                    (files) => files.endsWith(".js")
+                );
 
                 for (const file of commands) {
-                    const importFile = await import(`${dir}/${dirs}/${file}`)
-                    const commandClass = importFile.default
-                    const command = new commandClass(this)
+                    const importFile = await import(`${dir}/${dirs}/${file}`);
+                    const commandClass = importFile.default;
+                    const command = new commandClass(this);
 
-                    this.commands.set(command.name, command)
+                    this.commands.set(command.name, command);
 
-                    logger.info(`Loaded command: ${command.name}`)
+                    logger.info(`Loaded command: ${command.name}`);
                 }
-            })
+            });
     }
 
-    private async loadEvents(dir = join(__dirname, '../listeners')) {
-        readdirSync(dir).forEach(async file => {
-            const getFile = await import(`${dir}/${file}`).then(e => e.default)
-            const event = new getFile(this)
-            const evtName = file.split('.')[0]
+    private async loadEvents(dir = join(__dirname, "../listeners")) {
+        readdirSync(dir).forEach(async (file) => {
+            const getFile = await import(`${dir}/${file}`).then(
+                (e) => e.default
+            );
+            const event = new getFile(this);
+            const evtName = file.split(".")[0];
 
-            this.client.on(evtName, (...args) => event.run(...args))
+            this.client.on(evtName, (...args) => event.run(...args));
 
-            logger.info(`Loaded event: ${evtName}`)
-        })
+            logger.info(`Loaded event: ${evtName}`);
+        });
     }
 
     private handleErrs() {
-        process.on('uncaughtException', error => {
-            console.warn(error)
+        process.on("uncaughtException", (error) => {
+            console.warn(error);
 
-            if (!this.client) return
+            if (!this.client) return;
 
             return this.errHook.send({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle('ERROR: Uncaught Exception')
+                        .setTitle("ERROR: Uncaught Exception")
                         .setColor(this.colors.red)
                         .setThumbnail(`${this.logo}`)
-                        .setDescription('```js' + error.toString() + '```')
+                        .setDescription("```js" + error.toString() + "```")
                         .setTimestamp()
                         .setFooter({
                             text: `${this.credits}`,
-                            iconURL: `${this.logo}`
-                        })
-                ]
-            })
-        })
+                            iconURL: `${this.logo}`,
+                        }),
+                ],
+            });
+        });
 
-        process.on('unhandledRejection', (listener: any) => {
-            console.warn(listener)
+        process.on("unhandledRejection", (listener: any) => {
+            console.warn(listener);
 
-            if (!this.client) return
+            if (!this.client) return;
 
             this.errHook.send({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle('ERROR: UnHandled Rejection')
+                        .setTitle("ERROR: UnHandled Rejection")
                         .setColor(this.colors.red)
                         .setThumbnail(`${this.logo}`)
-                        .setDescription('```js' + listener.toString() + '```')
+                        .setDescription("```js" + listener.toString() + "```")
                         .setTimestamp()
                         .setFooter({
                             text: `${this.credits}`,
-                            iconURL: `${this.logo}`
-                        })
-                ]
-            })
-        })
+                            iconURL: `${this.logo}`,
+                        }),
+                ],
+            });
+        });
 
-        process.on('rejectionHandled', (listener: any) => {
-            console.warn(listener)
+        process.on("rejectionHandled", (listener: any) => {
+            console.warn(listener);
 
-            if (!this.client) return
+            if (!this.client) return;
 
             return this.errHook.send({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle('ERROR: Handled Rejection')
+                        .setTitle("ERROR: Handled Rejection")
                         .setColor(this.colors.red)
                         .setThumbnail(`${this.logo}`)
-                        .setDescription('```js' + listener.toString() + '```')
+                        .setDescription("```js" + listener.toString() + "```")
                         .setTimestamp()
                         .setFooter({
                             text: `${this.credits}`,
-                            iconURL: `${this.logo}`
-                        })
-                ]
-            })
-        })
+                            iconURL: `${this.logo}`,
+                        }),
+                ],
+            });
+        });
 
-        process.on('warning', warning => {
-            console.warn(warning)
+        process.on("warning", (warning) => {
+            console.warn(warning);
 
-            if (!this.client) return
+            if (!this.client) return;
 
             return this.errHook.send({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle('ERROR: Process Warning')
+                        .setTitle("ERROR: Process Warning")
                         .setColor(this.colors.red)
                         .setThumbnail(`${this.logo}`)
-                        .setDescription('```js' + warning.toString() + '```')
+                        .setDescription("```js" + warning.toString() + "```")
                         .setTimestamp()
                         .setFooter({
                             text: `${this.credits}`,
-                            iconURL: `${this.logo}`
-                        })
-                ]
-            })
-        })
+                            iconURL: `${this.logo}`,
+                        }),
+                ],
+            });
+        });
     }
 
     public log(options: IWebhookSend) {
         const webhook = new WebhookClient({
-            url: this.config.CHANNELS.LOGS
-        })
+            url: this.config.CHANNELS.LOGS,
+        });
 
-        webhook.send(options)
+        webhook.send(options);
     }
 }
 
-const bot = new Bot()
-export default bot
+const bot = new Bot();
+export default bot;

@@ -1,50 +1,50 @@
-import Command from '../commandClass'
-import type { ICommandInteraction } from '../../typings/types'
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js'
-import fetch from 'node-fetch'
+import Command from "../commandClass";
+import type { ICommandInteraction } from "../../typings/types";
+import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+import fetch from "node-fetch";
 
 export default class extends Command {
     constructor(bot: any) {
         super(bot, {
-            name: 'boobs',
-            usage: '/boobs <type>',
+            name: "boobs",
+            usage: "/boobs <type>",
             aliases: [],
             options: [
                 {
-                    name: 'type',
-                    description: 'Pick your poison',
+                    name: "type",
+                    description: "Pick your poison",
                     required: true,
-                    type: 'STRING',
+                    type: "STRING",
                     choices: [
                         {
-                            name: 'Real Life',
-                            value: 'boobs'
+                            name: "Real Life",
+                            value: "boobs",
                         },
                         {
-                            name: 'Hentai',
-                            value: 'hboobs'
-                        }
-                    ]
-                }
+                            name: "Hentai",
+                            value: "hboobs",
+                        },
+                    ],
+                },
             ],
-            description: 'Send a random image of boobies',
-            category: 'NSFW',
+            description: "Send a random image of boobies",
+            category: "NSFW",
             cooldown: 5,
             userPermissions: [],
             botPermissions: [],
-            subCommands: []
-        })
+            subCommands: [],
+        });
     }
 
     async execute(interaction: ICommandInteraction) {
-        let category = await interaction.options.get('type')?.value
+        let category = await interaction.options.get("type")?.value;
 
-        if (interaction.channel?.type === 'GUILD_TEXT') {
+        if (interaction.channel?.type === "GUILD_TEXT") {
             if (!interaction.channel.nsfw) {
                 return interaction.reply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle('ERROR: Incorrect Channel')
+                            .setTitle("ERROR: Incorrect Channel")
                             .setColor(this.bot.colors.red)
                             .setThumbnail(this.bot.logo)
                             .setDescription(
@@ -53,90 +53,100 @@ export default class extends Command {
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
-                    ]
-                })
+                                iconURL: `${this.bot.logo}`,
+                            }),
+                    ],
+                });
             } else {
-                const res = await fetch(`https://nekobot.xyz/api/image?type=${category}`).then(r => r.json())
+                const res = await fetch(
+                    `https://nekobot.xyz/api/image?type=${category}`
+                ).then((r) => r.json());
 
                 await interaction.reply({
                     embeds: [
                         new MessageEmbed()
-                            .setTitle('Look at the boobies')
+                            .setTitle("Look at the boobies")
                             .setColor(this.bot.colors.embed)
                             .setThumbnail(this.bot.logo)
                             .setImage(res.message)
                             .setTimestamp()
                             .setFooter({
                                 text: `${this.bot.credits}`,
-                                iconURL: `${this.bot.logo}`
-                            })
+                                iconURL: `${this.bot.logo}`,
+                            }),
                     ],
                     components: [
                         new MessageActionRow().addComponents([
                             new MessageButton()
-                                .setLabel('Close Generator')
-                                .setStyle('DANGER')
-                                .setCustomId('close-nsfw'),
-                            new MessageButton().setLabel('Next Image').setStyle('PRIMARY').setCustomId('generate-nsfw')
-                        ])
+                                .setLabel("Close Generator")
+                                .setStyle("DANGER")
+                                .setCustomId("close-nsfw"),
+                            new MessageButton()
+                                .setLabel("Next Image")
+                                .setStyle("PRIMARY")
+                                .setCustomId("generate-nsfw"),
+                        ]),
                     ],
-                    fetchReply: true
-                })
+                    fetchReply: true,
+                });
 
-                const collector = await interaction.channel!.createMessageComponentCollector({
-                    filter: (fn: any) => fn,
-                    componentType: 'BUTTON'
-                })
+                const collector =
+                    await interaction.channel!.createMessageComponentCollector({
+                        filter: (fn: any) => fn,
+                        componentType: "BUTTON",
+                    });
 
-                collector.on('collect', async (i: any) => {
-                    if (i.customId === 'generate-nsfw') {
-                        await i.deferUpdate()
+                collector.on("collect", async (i: any) => {
+                    if (i.customId === "generate-nsfw") {
+                        await i.deferUpdate();
 
-                        const res2 = await fetch(`https://nekobot.xyz/api/image?type=${category}`).then(r => r.json())
+                        const res2 = await fetch(
+                            `https://nekobot.xyz/api/image?type=${category}`
+                        ).then((r) => r.json());
 
                         return i.editReply({
                             embeds: [
                                 new MessageEmbed()
-                                    .setTitle('I like me some boobies')
+                                    .setTitle("I like me some boobies")
                                     .setColor(this.bot.colors.embed)
                                     .setThumbnail(this.bot.logo)
                                     .setImage(res2.message)
                                     .setTimestamp()
                                     .setFooter({
                                         text: `${this.bot.credits}`,
-                                        iconURL: `${this.bot.logo}`
-                                    })
-                            ]
-                        })
-                    } else if (i.customId === 'close-nsfw') {
-                        await i.deferReply()
+                                        iconURL: `${this.bot.logo}`,
+                                    }),
+                            ],
+                        });
+                    } else if (i.customId === "close-nsfw") {
+                        await i.deferReply();
 
                         await i.editReply({
                             embeds: [
                                 new MessageEmbed()
-                                    .setTitle('Closing NSFW Generator')
+                                    .setTitle("Closing NSFW Generator")
                                     .setColor(this.bot.colors.red)
                                     .setThumbnail(
-                                        'https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif'
+                                        "https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif"
                                     )
-                                    .setDescription('This may take a few seconds')
+                                    .setDescription(
+                                        "This may take a few seconds"
+                                    )
                                     .setTimestamp()
                                     .setFooter({
                                         text: `${this.bot.credits}`,
-                                        iconURL: `${this.bot.logo}`
-                                    })
-                            ]
-                        })
+                                        iconURL: `${this.bot.logo}`,
+                                    }),
+                            ],
+                        });
 
                         setTimeout(async () => {
-                            await i.deleteReply()
-                        }, 3000)
+                            await i.deleteReply();
+                        }, 3000);
 
-                        return interaction.deleteReply()
+                        return interaction.deleteReply();
                     }
-                })
+                });
             }
         }
     }
