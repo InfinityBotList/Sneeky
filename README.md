@@ -16,3 +16,7 @@ and unexpected errors, issues or concerns. **SELF HOSTING NOT RECOMMENDED**
 **OPEN-SOURCE FOR COMMUNITY CONTRIBUTIONS**
 
 ---
+
+## Use License 
+
+• This source code is protected under no license, all rights are reserved!
